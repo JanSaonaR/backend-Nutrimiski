@@ -1,17 +1,15 @@
 package com.upc.backendnutrimiski.models.dto;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import javax.persistence.Column;
 import java.util.Date;
 
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
-public class RegisterNutriotionistRequestDTO {
+public class RegisterNutritionistRequestDTO {
 
     private String dni = "";
     private String firstName;
@@ -21,6 +19,5 @@ public class RegisterNutriotionistRequestDTO {
     private Date birthDate;
     private String phone;
     private String sex;
-    private String rol;
     private String collegiate;
 }

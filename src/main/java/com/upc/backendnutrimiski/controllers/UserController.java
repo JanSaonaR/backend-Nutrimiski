@@ -3,10 +3,7 @@ package com.upc.backendnutrimiski.controllers;
 import com.upc.backendnutrimiski.models.Nutritionist;
 import com.upc.backendnutrimiski.models.Parent;
 import com.upc.backendnutrimiski.models.User;
-import com.upc.backendnutrimiski.models.dto.LoginRequestDTO;
-import com.upc.backendnutrimiski.models.dto.LoginResponseDTO;
-import com.upc.backendnutrimiski.models.dto.RegisterNutriotionistRequestDTO;
-import com.upc.backendnutrimiski.models.dto.ResponseDTO;
+import com.upc.backendnutrimiski.models.dto.*;
 import com.upc.backendnutrimiski.services.NutritionistService;
 import com.upc.backendnutrimiski.services.ParentService;
 import com.upc.backendnutrimiski.services.UserService;
@@ -61,7 +58,6 @@ public class UserController {
                     responseDTO.setErrorMessage("");
                     responseDTO.setData(loginResponseDTO);
 
-
                     HttpHeaders responseHeaders = new HttpHeaders();
                     responseHeaders.set("Token", UtilService.getJWTToken(request.getEmail()));
                     responseHeaders.set("FirstDayOfWeek",  day.toString());
@@ -96,24 +92,64 @@ public class UserController {
 
 
     @PostMapping("/register/parent")
-    public ResponseEntity<ResponseDTO<Parent>> registerParent(){
+    public ResponseEntity<ResponseDTO<Parent>> registerParent(@RequestBody RegisterParentRequestDTO request){
 
         ResponseDTO<Parent> responseDTO = new ResponseDTO<>();
 
-        return new ResponseEntity<>(responseDTO, HttpStatus.OK);
+        User existentUser = userService.findByEmail(request.getEmail());
+        if (existentUser != null) {
+            responseDTO.setErrorCode(1);
+            responseDTO.setErrorMessage("El paciente ya se encuentra registrado");
+            responseDTO.setHttpCode(HttpStatus.OK.value());
+            responseDTO.setData(null);
+            return new ResponseEntity<>(responseDTO, HttpStatus.OK);
+        }
+
+        try {
+            responseDTO.setErrorCode(0);
+            responseDTO.setErrorMessage("");
+            responseDTO.setHttpCode(HttpStatus.CREATED.value());
+            responseDTO.setData(userService.registerParent(request));
+
+            return new ResponseEntity<>(responseDTO, HttpStatus.CREATED);
+        } catch (Exception e) {
+            responseDTO.setErrorMessage(e.getMessage());
+        }
+        responseDTO.setErrorCode(2);
+        responseDTO.setHttpCode(HttpStatus.INTERNAL_SERVER_ERROR.value());
+        responseDTO.setData(null);
+
+        return new ResponseEntity<>(responseDTO, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
     @PostMapping("/register/nutritionist")
-    public ResponseEntity<ResponseDTO<Nutritionist>> registerNutritionist(@RequestBody RegisterNutriotionistRequestDTO request){
-
+    public ResponseEntity<ResponseDTO<Nutritionist>> registerNutritionist(@RequestBody RegisterNutritionistRequestDTO request){
         ResponseDTO<Nutritionist> responseDTO = new ResponseDTO<>();
-        try {
-            User user =
-        }catch (Exception e){
 
+        User existentUser = userService.findByEmail(request.getEmail());
+        if (existentUser != null) {
+            responseDTO.setErrorCode(1);
+            responseDTO.setErrorMessage("El paciente ya se encuentra registrado");
+            responseDTO.setHttpCode(HttpStatus.OK.value());
+            responseDTO.setData(null);
+            return new ResponseEntity<>(responseDTO, HttpStatus.OK);
         }
 
-        return new ResponseEntity<>(responseDTO, HttpStatus.OK);
+        try {
+            responseDTO.setErrorCode(0);
+            responseDTO.setErrorMessage("");
+            responseDTO.setHttpCode(HttpStatus.CREATED.value());
+            responseDTO.setData(userService.registerNutritionist(request));
+
+            return new ResponseEntity<>(responseDTO, HttpStatus.CREATED);
+        } catch (Exception e) {
+            responseDTO.setErrorMessage(e.getMessage());
+        }
+        responseDTO.setErrorCode(2);
+        responseDTO.setHttpCode(HttpStatus.INTERNAL_SERVER_ERROR.value());
+        responseDTO.setData(null);
+
+        return new ResponseEntity<>(responseDTO, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
 }
