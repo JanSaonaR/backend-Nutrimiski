@@ -19,10 +19,10 @@ public class NutritionalPlan {
     private Long nutritionalPlanId;
 
     @ManyToOne(optional = false, cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    @JoinColumn(name = "personalTreatmentsId",nullable = false)
-    private PersonalTreatments personalTreatments;
+    @JoinColumn(name = "medicalAppointmentId",nullable = false)
+    private MedicalAppointment medicalAppointment;
 
-    private double caloriesPlan;
+    private Integer caloriesPlan;
 
     private double weightPatient;
 

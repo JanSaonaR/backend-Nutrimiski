@@ -8,16 +8,16 @@ import javax.persistence.*;
 import java.util.Date;
 
 @Entity
-@Table(name = "personalTreatment")
+@Table(name = "medicalAppointment")
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class PersonalTreatments {
+public class MedicalAppointment {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(unique = true, nullable = false)
-    private Long personalTreatmentId;
+    private Long medicalAppointmentId;
 
     @ManyToOne(optional = false, cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JoinColumn(name = "childId",nullable = false)

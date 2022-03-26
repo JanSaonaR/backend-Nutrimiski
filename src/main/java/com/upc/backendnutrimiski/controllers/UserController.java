@@ -99,7 +99,7 @@ public class UserController {
         User existentUser = userService.findByEmail(request.getEmail());
         if (existentUser != null) {
             responseDTO.setErrorCode(1);
-            responseDTO.setErrorMessage("El paciente ya se encuentra registrado");
+            responseDTO.setErrorMessage("El padre ya se encuentra registrado");
             responseDTO.setHttpCode(HttpStatus.OK.value());
             responseDTO.setData(null);
             return new ResponseEntity<>(responseDTO, HttpStatus.OK);
@@ -129,7 +129,7 @@ public class UserController {
         User existentUser = userService.findByEmail(request.getEmail());
         if (existentUser != null) {
             responseDTO.setErrorCode(1);
-            responseDTO.setErrorMessage("El paciente ya se encuentra registrado");
+            responseDTO.setErrorMessage("El nutricionista ya se encuentra registrado");
             responseDTO.setHttpCode(HttpStatus.OK.value());
             responseDTO.setData(null);
             return new ResponseEntity<>(responseDTO, HttpStatus.OK);

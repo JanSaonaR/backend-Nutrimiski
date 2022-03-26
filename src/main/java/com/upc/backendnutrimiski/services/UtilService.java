@@ -1,5 +1,6 @@
 package com.upc.backendnutrimiski.services;
 
+import com.upc.backendnutrimiski.models.Child;
 import com.upc.backendnutrimiski.models.User;
 import com.upc.backendnutrimiski.util.Encryption;
 import io.jsonwebtoken.Jwts;
@@ -16,6 +17,8 @@ import java.io.UnsupportedEncodingException;
 import java.security.GeneralSecurityException;
 import java.security.NoSuchAlgorithmException;
 import java.security.spec.InvalidKeySpecException;
+import java.time.LocalDate;
+import java.time.Period;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -24,8 +27,6 @@ public class UtilService {
 
 
     public static Date getNowDate(){
-        //Cambiar cuando se suba a Amazon
-
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(new Date());
         String  tzCalendar = calendar.getTimeZone().getID();
@@ -37,6 +38,23 @@ public class UtilService {
         return calendar.getTime();
     }
 
+    public static Date getOnlyNowDate(){
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(new Date());
+        calendar.set(Calendar.HOUR, 0);
+        calendar.set(Calendar.MINUTE, 0);
+        calendar.set(Calendar.SECOND, 0);
+        calendar.set(Calendar.MILLISECOND, 0);
+        calendar.set(Calendar.HOUR_OF_DAY, 0);
+
+        String  tzCalendar = calendar.getTimeZone().getID();
+
+        if (!tzCalendar.equals("America/Bogota")){
+            calendar.add(Calendar.HOUR_OF_DAY, -5);
+        }
+
+        return calendar.getTime();
+    }
 
     public static Date getNowDateMealsWhitAddDays(Integer days){
         //Cambiar cuando se suba a Amazon
@@ -59,6 +77,50 @@ public class UtilService {
         calendar.add(Calendar.DATE, days);
 
         return calendar.getTime();
+    }
+
+    public static Double getCaloriesForChild(Child child){
+        double calorias = 0;
+        double factorEjercicio = 1.2;
+
+        if (child.getSex().equals("M"))
+            calorias = (655 + (9.6 * child.getWeight())) + ((1.8 * child.getHeight()) - (4.7 * child.getAge())) * factorEjercicio;
+        else
+            calorias = (66 + (13.7 * child.getWeight())) + ((5 * child.getHeight()) - (6.8 * child.getAge())) * factorEjercicio;
+        return calorias;
+    }
+
+    public static Date normalizeBirthDate(Date date){
+        //Cambiar cuando se suba a Amazon
+
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(date);
+        calendar.set(Calendar.HOUR, 0);
+        calendar.set(Calendar.MINUTE, 0);
+        calendar.set(Calendar.SECOND, 0);
+        calendar.set(Calendar.MILLISECOND, 0);
+        calendar.set(Calendar.HOUR_OF_DAY, 0);
+
+
+        String tzCalendar = calendar.getTimeZone().getID();
+        if (!tzCalendar.equals("America/Bogota") && calendar.get(Calendar.HOUR)!= 0){
+            calendar.add(Calendar.HOUR_OF_DAY, -5);
+        }
+
+        return calendar.getTime();
+    }
+
+    public static Integer getActualAge(Date date){
+        Calendar c = Calendar.getInstance();
+        c.setTime(date);
+
+        int y = c.get(Calendar.YEAR);
+        int m = c.get(Calendar.MONTH) + 1 ;
+        int d = c.get(Calendar.DAY_OF_MONTH);
+
+        LocalDate now = LocalDate.now();
+        Period age = Period.between(LocalDate.of(y,m,d), now);
+        return  age.getYears();
     }
 
     public static String randomString() {

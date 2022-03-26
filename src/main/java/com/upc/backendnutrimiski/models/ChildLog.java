@@ -29,6 +29,7 @@ public class ChildLog {
     private float height;
     private int age;
     private float imc;
+
     private Date date;
 
     @OneToOne(optional = false, cascade = CascadeType.ALL, fetch = FetchType.EAGER)

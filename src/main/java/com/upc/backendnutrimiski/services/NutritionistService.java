@@ -12,6 +12,10 @@ public class NutritionistService {
     NutritionistRepository nutritionistRepository;
 
 
+    public Nutritionist findById(Long nutritionistId){
+        return nutritionistRepository.findById(nutritionistId).get();
+    }
+
     public Nutritionist findByUser(Long userId){
         return nutritionistRepository.findByUser(userId);
     }
