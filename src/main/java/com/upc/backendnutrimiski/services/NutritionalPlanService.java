@@ -27,6 +27,10 @@ public class NutritionalPlanService {
     MealService mealService;
 
 
+    public NutritionalPlan getActiveNutritionalPlan(Long childId){
+        return nutritionalPlanRepository.findActiveNutritionalPlanByChild(childId);
+    }
+
     public NutritionalPlan createNutritionalPlan(Long childId){
 
         Child child = childService.getChildById(childId);

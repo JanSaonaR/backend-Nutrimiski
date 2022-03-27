@@ -110,6 +110,18 @@ public class UtilService {
         return calendar.getTime();
     }
 
+    public static Date normalizeDate(Date dt) {
+        Calendar c = Calendar.getInstance();
+        c.setTime(dt);
+        c.set(Calendar.HOUR, 0);
+        c.set(Calendar.MINUTE, 0);
+        c.set(Calendar.SECOND, 0);
+        c.set(Calendar.MILLISECOND, 0);
+        c.set(Calendar.HOUR_OF_DAY, 0);
+        dt = c.getTime();
+        return dt;
+    }
+
     public static Integer getActualAge(Date date){
         Calendar c = Calendar.getInstance();
         c.setTime(date);
