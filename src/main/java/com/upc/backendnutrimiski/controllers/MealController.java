@@ -16,6 +16,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.xml.ws.Response;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -53,6 +54,36 @@ public class MealController {
         return new ResponseEntity<>(responseDTO, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
+    @GetMapping("/day")
+    private ResponseEntity<ResponseDTO<List<Meal>>> getMealsByDay(@RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") Date date, @RequestParam Long patientId) {
+        ResponseDTO<List<Meal>> responseDTO = new ResponseDTO<>();
+        List<Meal> meals = new ArrayList<>();
+        try {
+            meals = mealService.getMealsByDay(date,patientId);
+            if (meals.size() == 0){
+                responseDTO.setHttpCode(HttpStatus.OK.value());
+                responseDTO.setErrorCode(1);
+                responseDTO.setErrorMessage("El niño no tiene dietas recomendadas para " + date);
+                responseDTO.setData(meals);
+            }
+            responseDTO.setHttpCode(HttpStatus.OK.value());
+            responseDTO.setErrorCode(0);
+            responseDTO.setErrorMessage("");
+            responseDTO.setData(meals);
+
+            return new ResponseEntity<>(responseDTO, HttpStatus.OK);
+
+        }catch (Exception e){
+            responseDTO.setHttpCode(HttpStatus.INTERNAL_SERVER_ERROR.value());
+            responseDTO.setErrorCode(0);
+            responseDTO.setErrorMessage(e.getMessage());
+            responseDTO.setData(null);
+            return new ResponseEntity<>(responseDTO, HttpStatus.OK);
+
+        }
+    }
+
+
     @GetMapping("/betweenDates")
     private ResponseEntity<ResponseDTO<List<Meal>>> getMealsBetweenDates(@RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") Date startDate,
                                             @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") Date endDate,
@@ -88,6 +119,76 @@ public class MealController {
         return null;
     }
 
+    @PutMapping("/completeMeal")
+    private ResponseEntity<ResponseDTO<Meal>> completeMeal(@RequestParam Long mealId) {
+        ResponseDTO<Meal> responseDTO = new ResponseDTO<>();
+
+        try {
+            Meal meal = mealService.getMealById(mealId);
+            meal.setStatus((byte) 1);
+            meal = mealService.saveMeal(meal);
+
+            responseDTO.setHttpCode(HttpStatus.OK.value());
+            responseDTO.setErrorCode(0);
+            responseDTO.setErrorMessage("");
+            responseDTO.setData(meal);
+
+            return new ResponseEntity<>(responseDTO, HttpStatus.OK);
+
+        } catch (Exception e) {
+            e.getMessage();
+        }
+
+        return new ResponseEntity<>(null, HttpStatus.OK);
+    }
+
+    @PutMapping("/failedMeal")
+    private ResponseEntity<ResponseDTO<Meal>> failedMeal(@RequestParam Long mealId) {
+        ResponseDTO<Meal> responseDTO = new ResponseDTO<>();
+
+        try {
+            Meal meal = mealService.getMealById(mealId);
+            meal.setStatus((byte) 2);
+            meal = mealService.saveMeal(meal);
+
+            responseDTO.setHttpCode(HttpStatus.OK.value());
+            responseDTO.setErrorCode(0);
+            responseDTO.setErrorMessage("");
+            responseDTO.setData(meal);
+
+            return new ResponseEntity<>(responseDTO, HttpStatus.OK);
+
+        } catch (Exception e) {
+            e.getMessage();
+        }
+
+        return new ResponseEntity<>(null, HttpStatus.OK);
+    }
+
+    @PutMapping("/restoreMeal")
+    private ResponseEntity<ResponseDTO<Meal>> restoreMeal(@RequestParam Long mealId) {
+        ResponseDTO<Meal> responseDTO = new ResponseDTO<>();
+
+        try {
+            Meal meal = mealService.getMealById(mealId);
+            meal.setStatus((byte) 0);
+            meal = mealService.saveMeal(meal);
+
+            responseDTO.setHttpCode(HttpStatus.OK.value());
+            responseDTO.setErrorCode(0);
+            responseDTO.setErrorMessage("");
+            responseDTO.setData(meal);
+
+            return new ResponseEntity<>(responseDTO, HttpStatus.OK);
+
+        } catch (Exception e) {
+            e.getMessage();
+        }
+
+        return new ResponseEntity<>(null, HttpStatus.OK);
+    }
+
+
     @PostMapping("/alternativeMeals")
     private ResponseEntity<ResponseDTO<List<Meal>>> getAlternativeMeals(@RequestBody ApiAlternativesRequest request) {
         ResponseDTO<List<Meal>> responseDTO = new ResponseDTO<>();
@@ -112,21 +213,11 @@ public class MealController {
         ResponseDTO<Meal> responseDTO = new ResponseDTO<>();
 
         try {
-            Meal originalMeal = mealService.getMealById(requestMeal.getMealId());
-
-            originalMeal.setName(requestMeal.getName());
-            originalMeal.setIngredients(requestMeal.getIngredients());
-            originalMeal.setFat(requestMeal.getFat());
-            originalMeal.setProtein(requestMeal.getProtein());
-            originalMeal.setCarbohydrates(requestMeal.getCarbohydrates());
-            originalMeal.setGramsPortion(requestMeal.getGramsPortion());
-            originalMeal.setImageUrl(requestMeal.getImageUrl());
-            originalMeal.setTotalCalories(requestMeal.getTotalCalories());
 
             responseDTO.setHttpCode(HttpStatus.OK.value());
             responseDTO.setErrorCode(0);
             responseDTO.setErrorMessage("");
-            responseDTO.setData(mealService.saveMeal(originalMeal));
+            responseDTO.setData(mealService.replaceMeal(requestMeal));
 
             return new ResponseEntity<>(responseDTO, HttpStatus.OK);
 
@@ -140,4 +231,5 @@ public class MealController {
 
         return new ResponseEntity<>(responseDTO, HttpStatus.OK);
     }
+
 }

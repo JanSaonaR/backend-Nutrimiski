@@ -43,4 +43,6 @@ public class MedicalAppointmentService {
         return medicalAppointmentRepository.save(medicalAppointment);
     }
 
+
+
 }

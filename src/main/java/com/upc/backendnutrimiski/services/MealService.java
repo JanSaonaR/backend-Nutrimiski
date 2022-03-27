@@ -3,6 +3,7 @@ package com.upc.backendnutrimiski.services;
 import com.upc.backendnutrimiski.models.Meal;
 import com.upc.backendnutrimiski.models.NutritionalPlan;
 import com.upc.backendnutrimiski.models.api.ApiAlternativesRequest;
+import com.upc.backendnutrimiski.models.dto.ReplaceMealRequestDTO;
 import com.upc.backendnutrimiski.repositories.MealRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -21,6 +22,9 @@ public class MealService {
         return mealRepository.save(meal);
     }
 
+    public List<Meal> getMealsByDay(Date date, Long patientId){
+        return  mealRepository.findMealsByDateByChild(date,patientId);
+    }
     public List<Meal> getMealsBetweenDates(Date startDate, Date endDate, NutritionalPlan nutritionalPlan){
         List<Meal> meals = mealRepository.findMealsBetweenDatesByNutritionalPlan(startDate,endDate,nutritionalPlan );
         return meals;
@@ -56,6 +60,22 @@ public class MealService {
         return meals;
 
 
+    }
+
+    public Meal replaceMeal(ReplaceMealRequestDTO requestMeal){
+
+        Meal originalMeal = getMealById(requestMeal.getMealId());
+
+        originalMeal.setName(requestMeal.getName());
+        originalMeal.setIngredients(requestMeal.getIngredients());
+        originalMeal.setFat(requestMeal.getFat());
+        originalMeal.setProtein(requestMeal.getProtein());
+        originalMeal.setCarbohydrates(requestMeal.getCarbohydrates());
+        originalMeal.setGramsPortion(requestMeal.getGramsPortion());
+        originalMeal.setImageUrl(requestMeal.getImageUrl());
+        originalMeal.setTotalCalories(requestMeal.getTotalCalories());
+
+        return mealRepository.save(originalMeal);
     }
 
 }

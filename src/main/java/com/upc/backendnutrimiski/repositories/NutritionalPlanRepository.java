@@ -12,7 +12,5 @@ public interface NutritionalPlanRepository extends JpaRepository<NutritionalPlan
     @Query("select n from NutritionalPlan n where n.medicalAppointment.child.childId = ?1 and n.isActive = 1")
     public NutritionalPlan getActiveNutritionalPlanByChild(Long childId);
 
-    @Query("select n from NutritionalPlan n where n.medicalAppointment.child.childId = ?1 and n.isActive = 1")
-    public NutritionalPlan findActiveNutritionalPlanByChild(Long childId);
 
 }

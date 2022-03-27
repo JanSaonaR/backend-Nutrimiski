@@ -28,7 +28,7 @@ public class NutritionalPlanService {
 
 
     public NutritionalPlan getActiveNutritionalPlan(Long childId){
-        return nutritionalPlanRepository.findActiveNutritionalPlanByChild(childId);
+        return nutritionalPlanRepository.getActiveNutritionalPlanByChild(childId);
     }
 
     public NutritionalPlan createNutritionalPlan(Long childId){

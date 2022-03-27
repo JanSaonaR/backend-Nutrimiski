@@ -84,4 +84,20 @@ public class UserService {
         return nutritionist;
     }
 
+    public String updatePassword(String email, String actualPassword, String newPassword){
+        User user = findByEmail(email);
+        if (user == null){
+            return "El usuario no existe";
+        }
+        String actualPasswordDecrypted = UtilService.desencriptarContrasena(user.getPassword());
+        if (actualPasswordDecrypted.equals(actualPassword)){
+            String newPasswordEncrypted = UtilService.encriptarContrasena(newPassword);
+            user.setPassword(newPasswordEncrypted);
+            userRepository.save(user);
+            return "La contraseña de actualizo correctamente";
+        } else {
+            return "La contraseña actual no es válida.";
+        }
+    }
+
 }

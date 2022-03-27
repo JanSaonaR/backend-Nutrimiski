@@ -63,4 +63,32 @@ public class ParentController {
     }
 
 
+    @GetMapping("")
+    public ResponseEntity<ResponseDTO<Parent>> getParentById(@RequestParam Long parentId){
+
+        ResponseDTO<Parent> responseDTO = new ResponseDTO<>();
+
+        try {
+            responseDTO.setHttpCode(HttpStatus.OK.value());
+            responseDTO.setErrorCode(0);
+            responseDTO.setErrorMessage("");
+            responseDTO.setData(parentService.findById(parentId));
+
+            return new ResponseEntity<>(responseDTO, HttpStatus.OK);
+
+        }catch (Exception e){
+            responseDTO.setErrorMessage(e.getMessage());
+            responseDTO.setHttpCode(HttpStatus.INTERNAL_SERVER_ERROR.value());
+            responseDTO.setErrorCode(1);
+            responseDTO.setData(null);
+        }
+
+        return new ResponseEntity<>(responseDTO, HttpStatus.INTERNAL_SERVER_ERROR);
+
+    }
+
+    public ResponseEntity<ResponseDTO<Child>> removeChild(@RequestParam Long childId){
+        return null;
+    }
+
 }

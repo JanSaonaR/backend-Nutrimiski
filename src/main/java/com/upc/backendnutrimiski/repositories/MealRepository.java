@@ -19,4 +19,7 @@ public interface MealRepository extends JpaRepository<Meal, Long> {
     @Query("select m from Meal m where m.day >= ?1 and m.day <= ?2 and m.nutritionalPlan = ?3")
     public List<Meal> findMealsBetweenDatesByNutritionalPlan(Date startDate, Date endDate, NutritionalPlan nutritionalPlan);
 
+    @Query("select m from Meal m where m.day = ?1 and m.nutritionalPlan.medicalAppointment.child.childId = ?2 and m.nutritionalPlan.isActive = 1")
+    public List<Meal> findMealsByDateByChild(Date date,  Long childId);
+
 }
