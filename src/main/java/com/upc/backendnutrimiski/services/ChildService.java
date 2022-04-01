@@ -4,6 +4,7 @@ import com.upc.backendnutrimiski.models.Child;
 import com.upc.backendnutrimiski.models.ChildLog;
 import com.upc.backendnutrimiski.models.Parent;
 import com.upc.backendnutrimiski.models.dto.RegisterChildRequestDTO;
+import com.upc.backendnutrimiski.models.dto.UpdateChildDTO;
 import com.upc.backendnutrimiski.repositories.ChildRepository;
 import io.swagger.models.auth.In;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,7 +29,7 @@ public class ChildService {
     }
 
     public Child getChildById(Long childId){
-        return childRepository.findById(childId).get();
+        return childRepository.findById(childId).orElse(null);
     }
 
     public Child registerChild(RegisterChildRequestDTO request, Parent parent){
@@ -52,10 +53,9 @@ public class ChildService {
         childLog.setChild(child);
         childLog.setHeight(child.getHeight());
         childLog.setAge(child.getAge());
-        childLog.setFirstName(child.getFirstName());
-        childLog.setLastName(child.getLastName());
         childLog.setImc(child.getImc());
         childLog.setWeight(child.getWeight());
+        childLog.setDate(UtilService.getNowDate());
 
         childLogService.saveChildLog(childLog);
 
@@ -69,6 +69,33 @@ public class ChildService {
         Integer redonded = ((int) (calories/10))*10;
 
         return redonded;
+    }
 
+    public Child updateChild(UpdateChildDTO request){
+        Child child = getChildById(request.getChildId());
+        child.setImc(request.getImc());
+        child.setWeight(request.getWeight());
+        child.setHeight(request.getHeight());
+        child.setAge(UtilService.getActualAge(child.getBirthDate()));
+
+        child = childRepository.save(child);
+
+        ChildLog childLog = new ChildLog();
+        childLog.setChild(child);
+        childLog.setWeight(child.getWeight());
+        childLog.setImc(child.getImc());
+        childLog.setHeight(child.getHeight());
+        childLog.setDate(UtilService.getNowDate());
+        childLog.setAge(child.getAge());
+
+        childLogService.saveChildLog(childLog);
+
+        return child;
+
+    }
+
+    public String deleteChild(Long childId) {
+        childRepository.deleteById(childId);
+        return "El niño se elimino correctamente";
     }
 }

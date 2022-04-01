@@ -2,17 +2,19 @@ package com.upc.backendnutrimiski.controllers;
 
 import com.upc.backendnutrimiski.models.Nutritionist;
 import com.upc.backendnutrimiski.models.Parent;
+import com.upc.backendnutrimiski.models.Picture;
 import com.upc.backendnutrimiski.models.User;
 import com.upc.backendnutrimiski.models.dto.*;
-import com.upc.backendnutrimiski.services.NutritionistService;
-import com.upc.backendnutrimiski.services.ParentService;
-import com.upc.backendnutrimiski.services.UserService;
-import com.upc.backendnutrimiski.services.UtilService;
+import com.upc.backendnutrimiski.services.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.IOException;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/user")
@@ -27,10 +29,12 @@ public class UserController {
     @Autowired
     NutritionistService nutritionistService;
 
-    @GetMapping("")
-    public String test(){
-        return "hola";
-    }
+    @Autowired
+    CloudinaryService cloudinaryService;
+
+    @Autowired
+    PictureService pictureService;
+
 
     @PostMapping("/login")
     public ResponseEntity<ResponseDTO<LoginResponseDTO>> login(@RequestBody LoginRequestDTO request){
@@ -91,11 +95,11 @@ public class UserController {
     }
 
 
-    @PostMapping("/register/parent")
-    public ResponseEntity<ResponseDTO<Parent>> registerParent(@RequestBody RegisterParentRequestDTO request){
+    @PostMapping(value = "/register/parent", consumes = {"multipart/form-data"})
+    public ResponseEntity<ResponseDTO<Parent>> registerParent( @RequestPart(value = "profilePic",required = false) MultipartFile profilePic,
+                                                               @RequestPart("request") RegisterParentRequestDTO request){
 
         ResponseDTO<Parent> responseDTO = new ResponseDTO<>();
-
         User existentUser = userService.findByEmail(request.getEmail());
         if (existentUser != null) {
             responseDTO.setErrorCode(1);
@@ -109,7 +113,7 @@ public class UserController {
             responseDTO.setErrorCode(0);
             responseDTO.setErrorMessage("");
             responseDTO.setHttpCode(HttpStatus.CREATED.value());
-            responseDTO.setData(userService.registerParent(request));
+            responseDTO.setData(userService.registerParent(request, profilePic));
 
             return new ResponseEntity<>(responseDTO, HttpStatus.CREATED);
         } catch (Exception e) {
@@ -122,9 +126,12 @@ public class UserController {
         return new ResponseEntity<>(responseDTO, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
-    @PostMapping("/register/nutritionist")
-    public ResponseEntity<ResponseDTO<Nutritionist>> registerNutritionist(@RequestBody RegisterNutritionistRequestDTO request){
-        ResponseDTO<Nutritionist> responseDTO = new ResponseDTO<>();
+
+    @PostMapping(value = "/register/nutritionist", consumes = {"multipart/form-data"})
+    public ResponseEntity<ResponseDTO<Nutritionist>> registerNutritionist( @RequestPart(value = "profilePic",required = false) MultipartFile profilePic,
+                                                               @RequestPart("request") RegisterNutritionistRequestDTO request)
+    {
+       ResponseDTO<Nutritionist> responseDTO = new ResponseDTO<>();
 
         User existentUser = userService.findByEmail(request.getEmail());
         if (existentUser != null) {
@@ -139,7 +146,7 @@ public class UserController {
             responseDTO.setErrorCode(0);
             responseDTO.setErrorMessage("");
             responseDTO.setHttpCode(HttpStatus.CREATED.value());
-            responseDTO.setData(userService.registerNutritionist(request));
+            responseDTO.setData(userService.registerNutritionist(request, profilePic));
 
             return new ResponseEntity<>(responseDTO, HttpStatus.CREATED);
         } catch (Exception e) {
@@ -173,6 +180,27 @@ public class UserController {
         responseDTO.setData(null);
         return new ResponseEntity<>(responseDTO, HttpStatus.INTERNAL_SERVER_ERROR);
 
+    }
+
+    @PostMapping("/image/upload")
+    public User subirImagen(@RequestParam("file")MultipartFile  imagen, @RequestParam("userId") Long userId) throws IOException {
+        User user = userService.findById(userId);
+        Map result = null;
+        if (!imagen.isEmpty()){
+            result = cloudinaryService.upload(imagen);
+            Picture picture = new Picture();
+            picture.setPictureId(result.get("public_id").toString());
+            picture.setUrl(result.get("url").toString());
+
+            if (user.getPicture() != null)
+            {
+                pictureService.deletePicture(user.getPicture().getPictureId());
+                cloudinaryService.delete(user.getPicture().getPictureId());
+            }
+            user.setPicture(picture);
+        }
+        user = userService.saveUser(user);
+        return user;
     }
 
 

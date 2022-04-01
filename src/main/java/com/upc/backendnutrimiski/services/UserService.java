@@ -2,6 +2,7 @@ package com.upc.backendnutrimiski.services;
 
 import com.upc.backendnutrimiski.models.Nutritionist;
 import com.upc.backendnutrimiski.models.Parent;
+import com.upc.backendnutrimiski.models.Picture;
 import com.upc.backendnutrimiski.models.User;
 import com.upc.backendnutrimiski.models.dto.RegisterNutritionistRequestDTO;
 import com.upc.backendnutrimiski.models.dto.RegisterParentRequestDTO;
@@ -10,6 +11,10 @@ import com.upc.backendnutrimiski.repositories.ParentRepository;
 import com.upc.backendnutrimiski.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.IOException;
+import java.util.Map;
 
 @Service
 public class UserService {
@@ -23,6 +28,16 @@ public class UserService {
     @Autowired
     ParentRepository parentRepository;
 
+    @Autowired
+    CloudinaryService cloudinaryService;
+
+    @Autowired
+    PictureService pictureService;
+
+    public User findById(Long userId){
+        return userRepository.findById(userId).orElse(null);
+    }
+
     public User findByEmail(String email){
         return userRepository.findByEmail(email);
     }
@@ -31,7 +46,7 @@ public class UserService {
         return userRepository.save(user);
     }
 
-    public Parent registerParent(RegisterParentRequestDTO request){
+    public Parent registerParent(RegisterParentRequestDTO request, MultipartFile profilePic) throws IOException {
         User user = new User();
         user.setDni(request.getDni());
         user.setEmail(request.getEmail());
@@ -46,6 +61,21 @@ public class UserService {
 
         Parent parent = new Parent();
 
+        if (profilePic != null){
+            if (!profilePic.isEmpty()) {
+                Map result = cloudinaryService.upload(profilePic);
+                Picture picture = new Picture();
+                picture.setPictureId(result.get("public_id").toString());
+                picture.setUrl(result.get("url").toString());
+
+                if (user.getPicture() != null) {
+                    pictureService.deletePicture(user.getPicture().getPictureId());
+                    cloudinaryService.delete(user.getPicture().getPictureId());
+                }
+                user.setPicture(picture);
+            }
+        }
+
         try {
             user = userRepository.save(user);
             parent.setUser(user);
@@ -56,7 +86,7 @@ public class UserService {
         return parent;
     }
 
-    public Nutritionist registerNutritionist(RegisterNutritionistRequestDTO request){
+    public Nutritionist registerNutritionist(RegisterNutritionistRequestDTO request, MultipartFile profilePic) throws IOException {
         User user = new User();
         user.setDni(request.getDni());
         user.setEmail(request.getEmail());
@@ -71,6 +101,23 @@ public class UserService {
 
         Nutritionist nutritionist = new Nutritionist();
         nutritionist.setCollegiate(request.getCollegiate());
+
+
+        if (profilePic != null){
+            if (!profilePic.isEmpty()) {
+                Map result = cloudinaryService.upload(profilePic);
+                Picture picture = new Picture();
+                picture.setPictureId(result.get("public_id").toString());
+                picture.setUrl(result.get("url").toString());
+
+                if (user.getPicture() != null) {
+                    pictureService.deletePicture(user.getPicture().getPictureId());
+                    cloudinaryService.delete(user.getPicture().getPictureId());
+                }
+                user.setPicture(picture);
+            }
+        }
+
 
         try {
             user = userRepository.save(user);
@@ -98,6 +145,11 @@ public class UserService {
         } else {
             return "La contraseña actual no es válida.";
         }
+    }
+
+    public void subirImagen(User user){
+
+
     }
 
 }

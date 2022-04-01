@@ -23,7 +23,7 @@ public class ParentService {
     }
 
     public Parent findById(Long parentId){
-        return parentRepository.findById(parentId).get();
+        return parentRepository.findById(parentId).orElse(null);
     }
 
 }

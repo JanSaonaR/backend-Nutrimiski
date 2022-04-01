@@ -49,4 +49,8 @@ public class User {
     @Column(length = 1, nullable = false)
     private String rol;
 
+    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
+    @JoinColumn(name = "pictureId", nullable = true)
+    private Picture picture;
+
 }

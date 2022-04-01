@@ -24,22 +24,22 @@ repositories {
 }
 
 dependencies {
-    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'//Api de persistencia de datos
     implementation 'org.springframework.boot:spring-boot-starter-web'
     compileOnly 'org.projectlombok:lombok'
-    runtimeOnly 'mysql:mysql-connector-java'
+    runtimeOnly 'mysql:mysql-connector-java'//driver mysql
     annotationProcessor 'org.projectlombok:lombok'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
-    implementation 'org.springframework.boot:spring-boot-starter-security:2.5.5'
+    implementation 'org.springframework.boot:spring-boot-starter-security:2.5.5'//validacion de tokens
 
-    implementation 'io.jsonwebtoken:jjwt:0.9.1'
-    implementation group: 'io.springfox', name: 'springfox-swagger2', version: '2.9.2'
+    implementation 'io.jsonwebtoken:jjwt:0.9.1'//generación de tokens
+    implementation group: 'io.springfox', name: 'springfox-swagger2', version: '2.9.2'//documentacion de endpoints
     implementation group: 'io.springfox', name: 'springfox-swagger-ui', version: '2.9.2'
 
-    implementation 'com.cloudinary:cloudinary-http44:1.29.0'
+    implementation 'com.cloudinary:cloudinary-http44:1.29.0'//subida de fotos
 
     // https://mvnrepository.com/artifact/javax.mail/mail
-    implementation group: 'javax.mail', name: 'mail', version: '1.4.7'
+    implementation group: 'javax.mail', name: 'mail', version: '1.4.7'//Envio de coreo para recuperar contrasñeas
 
 
 }
