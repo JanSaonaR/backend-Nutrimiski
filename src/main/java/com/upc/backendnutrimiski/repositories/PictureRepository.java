@@ -6,9 +6,12 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
-@Repository
-public interface PictureRepository extends JpaRepository<Picture, Long> {
+import javax.transaction.Transactional;
 
+@Repository
+public interface PictureRepository extends JpaRepository<Picture, String> {
+
+    @Transactional
     @Modifying
     @Query("delete from Picture p where p.pictureId = ?1")
     public int deleteByPictureId(String pictureId);

@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -28,14 +29,14 @@ public class ParentController {
         return parentService.findChildrenByParent(parentId);
     }
 
-    @PostMapping("/child")
-    public  ResponseEntity<ResponseDTO<Child>> registerChild(@RequestParam Long parentId, @RequestBody RegisterChildRequestDTO request){
+    @PostMapping(value = "/registerChild", consumes = {"multipart/form-data"})
+    public  ResponseEntity<ResponseDTO<Child>> registerChild(@RequestPart(value = "profilePic",required = false) MultipartFile profilePic,
+                                                             @RequestParam Long parentId,
+                                                             @RequestPart RegisterChildRequestDTO request){
 
         ResponseDTO<Child> responseDTO = new ResponseDTO<>();
-
-        Parent parent = new Parent();
         try {
-            parent = parentService.findById(parentId);
+            Parent parent  = parentService.findById(parentId);
             if (parent == null){
                 responseDTO.setHttpCode(HttpStatus.OK.value());
                 responseDTO.setErrorCode(1);
@@ -47,7 +48,7 @@ public class ParentController {
             responseDTO.setHttpCode(HttpStatus.CREATED.value());
             responseDTO.setErrorCode(0);
             responseDTO.setErrorMessage("");
-            responseDTO.setData(childService.registerChild(request, parent));
+            responseDTO.setData(childService.registerChild(request, parent, profilePic));
 
             return new ResponseEntity<>(responseDTO, HttpStatus.CREATED);
 

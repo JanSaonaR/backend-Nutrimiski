@@ -36,6 +36,37 @@ public class UserController {
     PictureService pictureService;
 
 
+    @GetMapping()
+    public ResponseEntity<ResponseDTO<User>> getUserById(@RequestParam Long userId) {
+
+        ResponseDTO<User> responseDTO = new ResponseDTO<>();
+
+        try {
+            User user = userService.findById(userId);
+            if (user == null){
+                responseDTO.setHttpCode(HttpStatus.OK.value());
+                responseDTO.setErrorCode(1);
+                responseDTO.setErrorMessage("El usuario no existe");
+                responseDTO.setData(null);
+
+                return new ResponseEntity<>(responseDTO, HttpStatus.OK);
+            }
+
+            responseDTO.setHttpCode(HttpStatus.OK.value());
+            responseDTO.setErrorCode(0);
+            responseDTO.setErrorMessage("");
+            responseDTO.setData(user);
+
+            return new ResponseEntity<>(responseDTO, HttpStatus.OK);
+        }catch (Exception e){
+            responseDTO.setHttpCode(HttpStatus.INTERNAL_SERVER_ERROR.value());
+            responseDTO.setErrorCode(2);
+            responseDTO.setErrorMessage(e.getMessage());
+            responseDTO.setData(null);
+        }
+        return new ResponseEntity<>(responseDTO , HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
     @PostMapping("/login")
     public ResponseEntity<ResponseDTO<LoginResponseDTO>> login(@RequestBody LoginRequestDTO request){
         LoginResponseDTO<Object> loginResponseDTO = new LoginResponseDTO<>();
@@ -94,7 +125,6 @@ public class UserController {
 
     }
 
-
     @PostMapping(value = "/register/parent", consumes = {"multipart/form-data"})
     public ResponseEntity<ResponseDTO<Parent>> registerParent( @RequestPart(value = "profilePic",required = false) MultipartFile profilePic,
                                                                @RequestPart("request") RegisterParentRequestDTO request){
@@ -125,7 +155,6 @@ public class UserController {
 
         return new ResponseEntity<>(responseDTO, HttpStatus.INTERNAL_SERVER_ERROR);
     }
-
 
     @PostMapping(value = "/register/nutritionist", consumes = {"multipart/form-data"})
     public ResponseEntity<ResponseDTO<Nutritionist>> registerNutritionist( @RequestPart(value = "profilePic",required = false) MultipartFile profilePic,
@@ -159,7 +188,6 @@ public class UserController {
         return new ResponseEntity<>(responseDTO, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
-
     @PostMapping("/updatePassword")
     private ResponseEntity<ResponseDTO<String>> updatePassword(@RequestParam String email, @RequestParam String actualPassword, @RequestParam String newPassword) {
         ResponseDTO<String> responseDTO = new ResponseDTO<>();
@@ -182,26 +210,66 @@ public class UserController {
 
     }
 
-    @PostMapping("/image/upload")
-    public User subirImagen(@RequestParam("file")MultipartFile  imagen, @RequestParam("userId") Long userId) throws IOException {
-        User user = userService.findById(userId);
-        Map result = null;
-        if (!imagen.isEmpty()){
-            result = cloudinaryService.upload(imagen);
-            Picture picture = new Picture();
-            picture.setPictureId(result.get("public_id").toString());
-            picture.setUrl(result.get("url").toString());
+    @PostMapping("/picture/upload")
+    public ResponseEntity<ResponseDTO<User>> subirImagen(@RequestParam("profilePic")MultipartFile  profilePic, @RequestParam("userId") Long userId) throws IOException {
 
-            if (user.getPicture() != null)
-            {
-                pictureService.deletePicture(user.getPicture().getPictureId());
-                cloudinaryService.delete(user.getPicture().getPictureId());
+        ResponseDTO<User> responseDTO = new ResponseDTO<>();
+
+        try {
+            User user = userService.findById(userId);
+
+            if (user == null){
+                responseDTO.setHttpCode(HttpStatus.OK.value());
+                responseDTO.setHttpCode(1);
+                responseDTO.setErrorMessage("El usuario no existe");
+                responseDTO.setData(null);
+
+                return new ResponseEntity<>(responseDTO, HttpStatus.OK);
             }
-            user.setPicture(picture);
+            responseDTO.setHttpCode(HttpStatus.OK.value());
+            responseDTO.setHttpCode(0);
+            responseDTO.setErrorMessage("");
+            responseDTO.setData(userService.subirImagen(user, profilePic));
+
+            return new ResponseEntity<>(responseDTO, HttpStatus.OK);
+
+        }catch (Exception e){
+            responseDTO.setHttpCode(HttpStatus.INTERNAL_SERVER_ERROR.value());
+            responseDTO.setHttpCode(2);
+            responseDTO.setErrorMessage(e.getMessage());
+            responseDTO.setData(null);
+
+            return new ResponseEntity<>(responseDTO, HttpStatus.INTERNAL_SERVER_ERROR);
         }
-        user = userService.saveUser(user);
-        return user;
     }
 
+    @DeleteMapping("/picture/delete")
+    public ResponseEntity<ResponseDTO<String>> deleteImagen(@RequestParam("userId") Long userId) throws IOException {
+
+        ResponseDTO<String> responseDTO = new ResponseDTO<>();
+
+        try {
+            User user = userService.findById(userId);
+            if (user == null){
+                responseDTO.setHttpCode(HttpStatus.OK.value());
+                responseDTO.setErrorCode(1);
+                responseDTO.setErrorMessage("El usuario no existe");
+                responseDTO.setData(null);
+            }
+
+            responseDTO.setHttpCode(HttpStatus.OK.value());
+            responseDTO.setErrorCode(0);
+            responseDTO.setErrorMessage("");
+            responseDTO.setData(userService.deleteUserPictureProfile(userId));
+
+        } catch (Exception e){
+            responseDTO.setHttpCode(HttpStatus.INTERNAL_SERVER_ERROR.value());
+            responseDTO.setErrorCode(3);
+            responseDTO.setErrorMessage(e.getMessage());
+            responseDTO.setData(null);
+        }
+
+        return new ResponseEntity<>(responseDTO, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
 
 }

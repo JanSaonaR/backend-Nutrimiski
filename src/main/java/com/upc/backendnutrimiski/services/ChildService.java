@@ -1,17 +1,18 @@
 package com.upc.backendnutrimiski.services;
 
-import com.upc.backendnutrimiski.models.Child;
-import com.upc.backendnutrimiski.models.ChildLog;
-import com.upc.backendnutrimiski.models.Parent;
+import com.upc.backendnutrimiski.models.*;
 import com.upc.backendnutrimiski.models.dto.RegisterChildRequestDTO;
 import com.upc.backendnutrimiski.models.dto.UpdateChildDTO;
 import com.upc.backendnutrimiski.repositories.ChildRepository;
 import io.swagger.models.auth.In;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.rmi.CORBA.Util;
+import java.io.IOException;
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class ChildService {
@@ -23,6 +24,12 @@ public class ChildService {
     @Autowired
     ChildLogService childLogService;
 
+    @Autowired
+    CloudinaryService cloudinaryService;
+
+    @Autowired
+    PictureService pictureService;
+
 
     public List<Child> getChildrenByParent(Long parentId){
         return childRepository.findByParent(parentId);
@@ -32,7 +39,7 @@ public class ChildService {
         return childRepository.findById(childId).orElse(null);
     }
 
-    public Child registerChild(RegisterChildRequestDTO request, Parent parent){
+    public Child registerChild(RegisterChildRequestDTO request, Parent parent, MultipartFile profilePic) throws IOException {
 
         Child child = new Child();
         child.setFirstName(request.getFirstName());
@@ -45,6 +52,23 @@ public class ChildService {
         child.setSex(request.getSex());
         child.setBirthDate(UtilService.normalizeBirthDate(request.getBirthDate()));
         child.setAge(UtilService.getActualAge(child.getBirthDate()));
+
+
+        if (profilePic != null){
+            if (!profilePic.isEmpty()) {
+                Map result = cloudinaryService.upload(profilePic);
+                Picture picture = new Picture();
+                picture.setPictureId(result.get("public_id").toString());
+                picture.setUrl(result.get("url").toString());
+
+                if (child.getPicture() != null) {
+                    pictureService.deletePicture(child.getPicture().getPictureId());
+                    cloudinaryService.delete(child.getPicture().getPictureId());
+                }
+                child.setPicture(picture);
+            }
+        }
+
 
         //System.out.println("Registrando niño: " + child.toString());
         child = childRepository.save(child);
@@ -59,9 +83,9 @@ public class ChildService {
 
         childLogService.saveChildLog(childLog);
 
+
         return child;
     }
-
 
     public Integer getRecomendedCalories(Child child){
 
@@ -98,4 +122,41 @@ public class ChildService {
         childRepository.deleteById(childId);
         return "El niño se elimino correctamente";
     }
+
+
+    public Child subirImagen(Child child, MultipartFile profilePic) throws IOException {
+
+        if (profilePic != null){
+            if (!profilePic.isEmpty()) {
+                Map result = cloudinaryService.upload(profilePic);
+                Picture picture = new Picture();
+                picture.setPictureId(result.get("public_id").toString());
+                picture.setUrl(result.get("url").toString());
+
+                if (child.getPicture() != null) {
+                    pictureService.deletePicture(child.getPicture().getPictureId());
+                    cloudinaryService.delete(child.getPicture().getPictureId());
+                }
+                child.setPicture(picture);
+                child = childRepository.save(child);
+            }
+        }
+        return  child;
+    }
+
+    public String deleteUserPictureProfile(Child child) throws IOException {
+
+        if (child.getPicture() != null){
+            Picture newPicture = new Picture();
+            newPicture.setPictureId(null);
+            newPicture.setUrl(null);
+
+            Map result = cloudinaryService.delete(child.getPicture().getPictureId());
+            child.setPicture(null);
+            childRepository.save(child);//Lo borra de yapa
+            return result.get("result").toString();
+        }
+        return "El usuario no tiene foto de perfil";
+    }
+
 }

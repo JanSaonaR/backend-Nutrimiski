@@ -12,7 +12,7 @@ public class PictureService {
     PictureRepository pictureRepository;
 
     public void deletePicture(String pictureId){
-        pictureRepository.deleteByPictureId(pictureId);
+        pictureRepository.deleteById(pictureId);
     }
 
 }

@@ -34,6 +34,9 @@ public class UserService {
     @Autowired
     PictureService pictureService;
 
+    @Autowired
+    UserService userService;
+
     public User findById(Long userId){
         return userRepository.findById(userId).orElse(null);
     }
@@ -147,9 +150,40 @@ public class UserService {
         }
     }
 
-    public void subirImagen(User user){
+    public User subirImagen(User user, MultipartFile profilePic) throws IOException {
 
+        if (profilePic != null){
+            if (!profilePic.isEmpty()) {
+                Map result = cloudinaryService.upload(profilePic);
+                Picture picture = new Picture();
+                picture.setPictureId(result.get("public_id").toString());
+                picture.setUrl(result.get("url").toString());
 
+                if (user.getPicture() != null) {
+                    pictureService.deletePicture(user.getPicture().getPictureId());
+                    cloudinaryService.delete(user.getPicture().getPictureId());
+                }
+                user.setPicture(picture);
+                user = userRepository.save(user);
+            }
+        }
+        return  user;
+    }
+
+    public String deleteUserPictureProfile(Long userId) throws IOException {
+        User user = userService.findById(userId);
+
+        if (user.getPicture() != null){
+            Picture newPicture = new Picture();
+            newPicture.setPictureId(null);
+            newPicture.setUrl(null);
+
+            Map result = cloudinaryService.delete(user.getPicture().getPictureId());
+            user.setPicture(null);
+            userService.saveUser(user);//Lo borra de yapa
+            return result.get("result").toString();
+        }
+        return "El usuario no tiene foto de perfil";
     }
 
 }
