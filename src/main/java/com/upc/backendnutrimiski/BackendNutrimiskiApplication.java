@@ -1,5 +1,6 @@
 package com.upc.backendnutrimiski;
 
+import com.upc.backendnutrimiski.models.Nutritionist;
 import com.upc.backendnutrimiski.security.JWTAuthorizationFilter;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -8,6 +9,9 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+
+import java.util.List;
+import java.util.Random;
 
 @SpringBootApplication
 public class BackendNutrimiskiApplication {

@@ -11,6 +11,7 @@ import org.hibernate.annotations.Cascade;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -38,7 +39,7 @@ public class Child implements Serializable {
     private int age;
     private float imc;
 
-    private Date birthDate;
+    private LocalDate birthDate;
 
     @Column(length = 8)
     private String dni;

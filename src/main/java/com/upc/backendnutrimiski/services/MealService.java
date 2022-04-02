@@ -8,6 +8,7 @@ import com.upc.backendnutrimiski.repositories.MealRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -22,10 +23,10 @@ public class MealService {
         return mealRepository.save(meal);
     }
 
-    public List<Meal> getMealsByDay(Date date, Long patientId){
+    public List<Meal> getMealsByDay(LocalDate date, Long patientId){
         return  mealRepository.findMealsByDateByChild(date,patientId);
     }
-    public List<Meal> getMealsBetweenDates(Date startDate, Date endDate, NutritionalPlan nutritionalPlan){
+    public List<Meal> getMealsBetweenDates(LocalDate startDate, LocalDate endDate, NutritionalPlan nutritionalPlan){
         List<Meal> meals = mealRepository.findMealsBetweenDatesByNutritionalPlan(startDate,endDate,nutritionalPlan );
         return meals;
     }

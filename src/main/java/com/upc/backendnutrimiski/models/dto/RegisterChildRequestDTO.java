@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDate;
 import java.util.Date;
 
 @Data
@@ -16,7 +17,7 @@ public class RegisterChildRequestDTO {
     private float weight;
     private float height;
     private float imc;
-    private Date birthDate;
+    private LocalDate birthDate;
     private String dni;
     private String sex;
 }

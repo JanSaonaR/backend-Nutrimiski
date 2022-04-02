@@ -6,6 +6,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
+import java.time.LocalDate;
 import java.util.Date;
 import java.util.List;
 
@@ -17,9 +18,9 @@ public interface MealRepository extends JpaRepository<Meal, Long> {
     public List<Meal> getMealsByChild(Long childId);
 
     @Query("select m from Meal m where m.day >= ?1 and m.day <= ?2 and m.nutritionalPlan = ?3")
-    public List<Meal> findMealsBetweenDatesByNutritionalPlan(Date startDate, Date endDate, NutritionalPlan nutritionalPlan);
+    public List<Meal> findMealsBetweenDatesByNutritionalPlan(LocalDate startDate, LocalDate endDate, NutritionalPlan nutritionalPlan);
 
     @Query("select m from Meal m where m.day = ?1 and m.nutritionalPlan.medicalAppointment.child.childId = ?2 and m.nutritionalPlan.isActive = 1")
-    public List<Meal> findMealsByDateByChild(Date date,  Long childId);
+    public List<Meal> findMealsByDateByChild(LocalDate date,  Long childId);
 
 }

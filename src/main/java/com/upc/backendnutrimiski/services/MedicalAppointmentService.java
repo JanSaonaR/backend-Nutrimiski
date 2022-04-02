@@ -35,7 +35,7 @@ public class MedicalAppointmentService {
 
         MedicalAppointment medicalAppointment = new MedicalAppointment();
         medicalAppointment.setActive((byte)1);
-        medicalAppointment.setStartDate(UtilService.getOnlyNowDate());
+        medicalAppointment.setStartDate(UtilService.getNowDate());
         medicalAppointment.setEndDate(null);
         medicalAppointment.setNutritionist(nutritionist);
         medicalAppointment.setChild(child);

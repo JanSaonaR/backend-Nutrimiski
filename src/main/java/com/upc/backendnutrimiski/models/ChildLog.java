@@ -5,6 +5,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.time.LocalDate;
 import java.util.Date;
 
 @Entity
@@ -23,7 +24,7 @@ public class ChildLog {
     private float height;
     private int age;
     private float imc;
-    private Date date;
+    private LocalDate date;
 
     @ManyToOne
     @JoinColumn(name = "childId")

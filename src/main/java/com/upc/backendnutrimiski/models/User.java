@@ -7,6 +7,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.time.LocalDate;
 import java.util.Date;
 
 @Entity
@@ -44,7 +45,7 @@ public class User {
     @Column(length = 1, nullable = false)
     private String sex;
 
-    private Date registerDate;
+    private LocalDate registerDate;
     //P-N
     @Column(length = 1, nullable = false)
     private String rol;

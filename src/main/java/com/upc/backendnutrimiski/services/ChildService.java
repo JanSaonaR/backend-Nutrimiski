@@ -50,7 +50,7 @@ public class ChildService {
         child.setImc(request.getImc());
         child.setParent(parent);
         child.setSex(request.getSex());
-        child.setBirthDate(UtilService.normalizeBirthDate(request.getBirthDate()));
+        child.setBirthDate(request.getBirthDate());
         child.setAge(UtilService.getActualAge(child.getBirthDate()));
 
 

@@ -9,6 +9,7 @@ import com.upc.backendnutrimiski.models.dto.ResponseDTO;
 import com.upc.backendnutrimiski.services.MealService;
 import com.upc.backendnutrimiski.services.NutritionalPlanService;
 import com.upc.backendnutrimiski.services.UtilService;
+import org.apache.tomcat.jni.Local;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
@@ -16,6 +17,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.xml.ws.Response;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -55,11 +57,11 @@ public class MealController {
     }
 
     @GetMapping("/day")
-    private ResponseEntity<ResponseDTO<List<Meal>>> getMealsByDay(@RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") Date date, @RequestParam Long patientId) {
+    private ResponseEntity<ResponseDTO<List<Meal>>> getMealsByDay(@RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate date, @RequestParam Long childId) {
         ResponseDTO<List<Meal>> responseDTO = new ResponseDTO<>();
         List<Meal> meals = new ArrayList<>();
         try {
-            meals = mealService.getMealsByDay(date,patientId);
+            meals = mealService.getMealsByDay(date,childId);
             if (meals.size() == 0){
                 responseDTO.setHttpCode(HttpStatus.OK.value());
                 responseDTO.setErrorCode(1);
@@ -83,15 +85,12 @@ public class MealController {
         }
     }
 
-
     @GetMapping("/betweenDates")
-    private ResponseEntity<ResponseDTO<List<Meal>>> getMealsBetweenDates(@RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") Date startDate,
-                                            @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") Date endDate,
+    private ResponseEntity<ResponseDTO<List<Meal>>> getMealsBetweenDates(@RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate startDate,
+                                            @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate endDate,
                                             @RequestParam Long childId) {
 
 
-        Date sd = UtilService.normalizeDate(startDate);
-        Date ed = UtilService.normalizeDate(endDate);
 
         ResponseDTO<List<Meal>> responseDTO = new ResponseDTO<>();
 
@@ -106,7 +105,7 @@ public class MealController {
             responseDTO.setHttpCode(HttpStatus.OK.value());
             responseDTO.setErrorCode(0);
             responseDTO.setErrorMessage("");
-            responseDTO.setData(mealService.getMealsBetweenDates(sd, ed, nutritionalPlan));
+            responseDTO.setData(mealService.getMealsBetweenDates(startDate, endDate, nutritionalPlan));
 
             return new ResponseEntity<>(responseDTO, HttpStatus.OK);
 
@@ -161,7 +160,6 @@ public class MealController {
         } catch (Exception e) {
             e.getMessage();
         }
-
         return new ResponseEntity<>(null, HttpStatus.OK);
     }
 
@@ -187,7 +185,6 @@ public class MealController {
 
         return new ResponseEntity<>(null, HttpStatus.OK);
     }
-
 
     @PostMapping("/alternativeMeals")
     private ResponseEntity<ResponseDTO<List<Meal>>> getAlternativeMeals(@RequestBody ApiAlternativesRequest request) {

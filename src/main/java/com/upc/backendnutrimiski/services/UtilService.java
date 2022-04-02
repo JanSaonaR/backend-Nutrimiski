@@ -5,6 +5,7 @@ import com.upc.backendnutrimiski.models.User;
 import com.upc.backendnutrimiski.util.Encryption;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
+import org.apache.tomcat.jni.Local;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.AuthorityUtils;
 
@@ -18,65 +19,35 @@ import java.security.GeneralSecurityException;
 import java.security.NoSuchAlgorithmException;
 import java.security.spec.InvalidKeySpecException;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.Period;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.stream.Collectors;
 
 
 public class UtilService {
 
+    private static final ZoneId oldZone = ZoneId.of(TimeZone.getDefault().getID());
 
-    public static Date getNowDate(){
-        Calendar calendar = Calendar.getInstance();
-        calendar.setTime(new Date());
-        String  tzCalendar = calendar.getTimeZone().getID();
+    public static LocalDate getNowDate(){
+        LocalDateTime oldDateTime = LocalDateTime.now();
 
-        if (!tzCalendar.equals("America/Bogota")){
-            calendar.add(Calendar.HOUR_OF_DAY, -5);
-        }
+        ZoneId newZone = ZoneId.of("America/Lima");
 
-        return calendar.getTime();
+        LocalDateTime newDateTime = oldDateTime.atZone(oldZone)
+                .withZoneSameInstant(newZone)
+                .toLocalDateTime();
+
+        System.out.println(newDateTime.format(DateTimeFormatter.ISO_LOCAL_DATE));
+        System.out.println(newDateTime.toLocalDate());
+
+        return newDateTime.toLocalDate();
     }
 
-    public static Date getOnlyNowDate(){
-        Calendar calendar = Calendar.getInstance();
-        calendar.setTime(new Date());
-        calendar.set(Calendar.HOUR, 0);
-        calendar.set(Calendar.MINUTE, 0);
-        calendar.set(Calendar.SECOND, 0);
-        calendar.set(Calendar.MILLISECOND, 0);
-        calendar.set(Calendar.HOUR_OF_DAY, 0);
-
-        String  tzCalendar = calendar.getTimeZone().getID();
-
-        if (!tzCalendar.equals("America/Bogota")){
-            calendar.add(Calendar.HOUR_OF_DAY, -5);
-        }
-
-        return calendar.getTime();
-    }
-
-    public static Date getNowDateMealsWhitAddDays(Integer days){
-        //Cambiar cuando se suba a Amazon
-
-        Calendar calendar = Calendar.getInstance();
-        calendar.setTime(new Date());
-        calendar.set(Calendar.HOUR, 0);
-        calendar.set(Calendar.MINUTE, 0);
-        calendar.set(Calendar.SECOND, 0);
-        calendar.set(Calendar.MILLISECOND, 0);
-        calendar.set(Calendar.HOUR_OF_DAY, 0);
-
-
-        String tzCalendar = calendar.getTimeZone().getID();
-
-        if (!tzCalendar.equals("America/Bogota") && calendar.get(Calendar.HOUR)!= 0){
-            calendar.add(Calendar.HOUR_OF_DAY, -5);
-        }
-
-        calendar.add(Calendar.DATE, days);
-
-        return calendar.getTime();
+    public static LocalDate getNowDateMealsWhitAddDays(Integer days){
+        return getNowDate().plusDays(days);
     }
 
     public static Double getCaloriesForChild(Child child){
@@ -90,48 +61,8 @@ public class UtilService {
         return calorias;
     }
 
-    public static Date normalizeBirthDate(Date date){
-        //Cambiar cuando se suba a Amazon
-
-        Calendar calendar = Calendar.getInstance();
-        calendar.setTime(date);
-        calendar.set(Calendar.HOUR, 0);
-        calendar.set(Calendar.MINUTE, 0);
-        calendar.set(Calendar.SECOND, 0);
-        calendar.set(Calendar.MILLISECOND, 0);
-        calendar.set(Calendar.HOUR_OF_DAY, 0);
-
-
-        String tzCalendar = calendar.getTimeZone().getID();
-        if (!tzCalendar.equals("America/Bogota") && calendar.get(Calendar.HOUR)!= 0){
-            calendar.add(Calendar.HOUR_OF_DAY, -5);
-        }
-
-        return calendar.getTime();
-    }
-
-    public static Date normalizeDate(Date dt) {
-        Calendar c = Calendar.getInstance();
-        c.setTime(dt);
-        c.set(Calendar.HOUR, 0);
-        c.set(Calendar.MINUTE, 0);
-        c.set(Calendar.SECOND, 0);
-        c.set(Calendar.MILLISECOND, 0);
-        c.set(Calendar.HOUR_OF_DAY, 0);
-        dt = c.getTime();
-        return dt;
-    }
-
-    public static Integer getActualAge(Date date){
-        Calendar c = Calendar.getInstance();
-        c.setTime(date);
-
-        int y = c.get(Calendar.YEAR);
-        int m = c.get(Calendar.MONTH) + 1 ;
-        int d = c.get(Calendar.DAY_OF_MONTH);
-
-        LocalDate now = LocalDate.now();
-        Period age = Period.between(LocalDate.of(y,m,d), now);
+    public static Integer getActualAge(LocalDate date){
+        Period age = Period.between(date, getNowDate());
         return  age.getYears();
     }
 

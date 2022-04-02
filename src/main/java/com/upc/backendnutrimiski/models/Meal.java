@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.time.LocalDate;
 import java.util.Date;
 
 @Entity
@@ -25,7 +26,7 @@ public class Meal {
     @JoinColumn(name = "nutritionalPlanId",nullable = false)
     private NutritionalPlan nutritionalPlan;
 
-    private Date day;
+    private LocalDate day;
 
     private String schedule;
 

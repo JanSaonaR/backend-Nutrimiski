@@ -26,12 +26,13 @@ public class MedicalAppointmentController {
     ChildService childService;
 
     @PostMapping("")
-    private ResponseEntity<ResponseDTO<MedicalAppointment>> createMedicalAppointment(@RequestParam Long nutritionistId, @RequestParam Long childId){
-
+    private ResponseEntity<ResponseDTO<MedicalAppointment>> createMedicalAppointment(//@RequestParam Long nutritionistId,
+                                                                                     @RequestParam Long childId){
         ResponseDTO<MedicalAppointment> responseDTO = new ResponseDTO<>();
 
         try {
-            Nutritionist nutritionist = nutritionistService.findById(nutritionistId);
+            //Nutritionist nutritionist = nutritionistService.findById(nutritionistId);
+            Nutritionist nutritionist = nutritionistService.getRandomNutritionist();
             Child child = childService.getChildById(childId);
 
             if (nutritionist == null){
@@ -60,4 +61,6 @@ public class MedicalAppointmentController {
 
         return new ResponseEntity<>(responseDTO, HttpStatus.INTERNAL_SERVER_ERROR);
     }
+
+
 }

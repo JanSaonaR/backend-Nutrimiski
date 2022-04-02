@@ -5,6 +5,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.time.LocalDate;
 import java.util.Date;
 
 @Entity
@@ -27,9 +28,9 @@ public class MedicalAppointment {
     @JoinColumn(name = "nutritionistId",nullable = false)
     private Nutritionist nutritionist;
 
-    private Date startDate;
+    private LocalDate startDate;
 
-    private Date endDate;
+    private LocalDate endDate;
 
     private Byte active;
 

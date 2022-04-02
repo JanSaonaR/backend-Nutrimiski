@@ -9,6 +9,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Random;
+import java.util.concurrent.ThreadLocalRandom;
 
 @Service
 public class NutritionistService {
@@ -21,7 +23,7 @@ public class NutritionistService {
 
 
     public Nutritionist findById(Long nutritionistId){
-        return nutritionistRepository.findById(nutritionistId).get();
+        return nutritionistRepository.findById(nutritionistId).orElse(null);
     }
 
     public Nutritionist findByUser(Long userId){
@@ -48,5 +50,12 @@ public class NutritionistService {
 
     public List<Child> getActiveChildren(Long nutritionistId){
         return nutritionistRepository.findActiveChildren(nutritionistId);
+    }
+
+    public  Nutritionist getRandomNutritionist(){
+        List<Nutritionist> nutritionists = nutritionistRepository.findAll();
+        Random rand = new Random();
+        int rand_int = rand.nextInt(nutritionists.size());
+        return nutritionists.get(rand_int);
     }
 }
