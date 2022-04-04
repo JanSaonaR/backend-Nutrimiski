@@ -1,6 +1,7 @@
 package com.upc.backendnutrimiski.repositories;
 
 import com.upc.backendnutrimiski.models.Child;
+import com.upc.backendnutrimiski.models.Parent;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -24,5 +25,7 @@ public interface ChildRepository extends JpaRepository<Child, Long> {
     @Query("select c from Child c where c.dni = ?1")
     public Optional<Child> findByDni(String dni);
 
+    @Query("select c.parent.children from Child c where c.childId = ?1")
+    public List<Child> findBrothers(Long childId);
 
 }

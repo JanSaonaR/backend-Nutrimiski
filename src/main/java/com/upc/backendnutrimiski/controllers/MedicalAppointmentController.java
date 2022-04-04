@@ -32,14 +32,28 @@ public class MedicalAppointmentController {
 
         try {
             //Nutritionist nutritionist = nutritionistService.findById(nutritionistId);
-            Nutritionist nutritionist = nutritionistService.getRandomNutritionist();
+
             Child child = childService.getChildById(childId);
 
-            if (nutritionist == null){
+            if (child == null){
                 responseDTO.setHttpCode(HttpStatus.OK.value());
                 responseDTO.setErrorCode(1);
+                responseDTO.setErrorMessage("El niño no existe");
+                responseDTO.setData(null);
+
+                return new ResponseEntity<>(responseDTO, HttpStatus.OK);
+
+            }
+
+            Nutritionist nutritionist = nutritionistService.getFamilyNutritionist(child);
+            if (nutritionist == null){
+                responseDTO.setHttpCode(HttpStatus.OK.value());
+                responseDTO.setErrorCode(2);
                 responseDTO.setErrorMessage("El nutricionista no existe");
                 responseDTO.setData(null);
+
+                return new ResponseEntity<>(responseDTO, HttpStatus.OK);
+
             }
 
             responseDTO.setHttpCode(HttpStatus.CREATED.value());
@@ -52,15 +66,12 @@ public class MedicalAppointmentController {
 
         }catch (Exception e){
 
-            responseDTO.setHttpCode(HttpStatus.OK.value());
-            responseDTO.setErrorCode(0);
+            responseDTO.setHttpCode(HttpStatus.INTERNAL_SERVER_ERROR.value());
+            responseDTO.setErrorCode(3);
             responseDTO.setErrorMessage(e.getMessage());
             responseDTO.setData(null);
 
+            return new ResponseEntity<>(responseDTO, HttpStatus.INTERNAL_SERVER_ERROR);
         }
-
-        return new ResponseEntity<>(responseDTO, HttpStatus.INTERNAL_SERVER_ERROR);
     }
-
-
 }

@@ -1,9 +1,6 @@
 package com.upc.backendnutrimiski.services;
 
-import com.upc.backendnutrimiski.models.Child;
-import com.upc.backendnutrimiski.models.Meal;
-import com.upc.backendnutrimiski.models.MedicalAppointment;
-import com.upc.backendnutrimiski.models.NutritionalPlan;
+import com.upc.backendnutrimiski.models.*;
 import com.upc.backendnutrimiski.repositories.NutritionalPlanRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -26,6 +23,9 @@ public class NutritionalPlanService {
     @Autowired
     MealService mealService;
 
+    @Autowired
+    NutritionistService nutritionistService;
+
 
     public NutritionalPlan getActiveNutritionalPlan(Long childId){
         return nutritionalPlanRepository.getActiveNutritionalPlanByChild(childId);
@@ -46,6 +46,7 @@ public class NutritionalPlanService {
             medicalAppointment.setEndDate(null);
             medicalAppointment.setChild(child);
             medicalAppointment.setStartDate(UtilService.getNowDate());
+            medicalAppointment.setNutritionist(nutritionistService.getFamilyNutritionist(child));
             medicalAppointment = medicalAppointmentService.saveMedicalAppointment(medicalAppointment);
         }
 
@@ -64,6 +65,10 @@ public class NutritionalPlanService {
         generateMeals(nutritionalPlan);
         System.out.println("Comidas generadas...");
 
+        Nutritionist nutritionist = medicalAppointment.getNutritionist();
+        nutritionist.setActiveChildren(nutritionistService.getTotalActiveChildren(nutritionist.getNutritionistId()));
+        nutritionistService.saveNutritionist(nutritionist);
+
         return nutritionalPlan;
     }
 
@@ -72,20 +77,22 @@ public class NutritionalPlanService {
         Integer weight = (int) nutritionalPlan.getWeightPatient();
         List<Meal> meals = new ArrayList<>();
         for (int i = 0; i< 15; i++){
-            Meal meal = new Meal();
-            meal.setDay(UtilService.getNowDateMealsWhitAddDays(i+1));
-            meal.setFat(30);
-            meal.setProtein(150);
-            meal.setCarbohydrates(500);
-            meal.setGramsPortion(300);
-            meal.setImageUrl("");
-            meal.setIngredients("Platano");
-            meal.setName("Comida");
-            meal.setStatus((byte) 0);
-            meal.setTotalCalories(500);
-            meal.setSchedule("DESAYUNO");
-            meal.setNutritionalPlan(nutritionalPlan);
-            meals.add(mealService.saveMeal(meal));
+            for (int j = 0; j< 3; j++) {
+                Meal meal = new Meal();
+                meal.setDay(UtilService.getNowDateMealsWhitAddDays(i + 1));
+                meal.setFat(30);
+                meal.setProtein(150);
+                meal.setCarbohydrates(500);
+                meal.setGramsPortion(300);
+                meal.setImageUrl("");
+                meal.setIngredients("Platano-Platano2");
+                meal.setName("Comida " + j);
+                meal.setStatus((byte) 0);
+                meal.setTotalCalories(500);
+                meal.setSchedule("DESAYUNO");
+                meal.setNutritionalPlan(nutritionalPlan);
+                meals.add(mealService.saveMeal(meal));
+            }
         }
         return meals;
     }

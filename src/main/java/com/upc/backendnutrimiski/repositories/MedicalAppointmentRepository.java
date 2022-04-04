@@ -20,4 +20,7 @@ public interface MedicalAppointmentRepository extends JpaRepository<MedicalAppoi
     @Query("select count(m) from MedicalAppointment m where m.nutritionist.nutritionistId = ?1 and m.active = 1")
     public Integer findTotalActiveChildren(Long nutritionistId);
 
+    @Query(value = "SELECT ma.nutritionist_id FROM medical_appointment ma JOIN child c ON ma.child_id= c.child_id WHERE c.child_id IN ?1 LIMIT 1", nativeQuery = true)
+    public Long findFamilyNutritionist(List<Long> children);
+
 }
