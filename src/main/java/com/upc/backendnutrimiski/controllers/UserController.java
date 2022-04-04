@@ -112,6 +112,9 @@ public class UserController {
                 responseDTO.setErrorCode(1);
                 responseDTO.setErrorMessage("User not registered");
                 responseDTO.setData(null);
+
+                return new ResponseEntity<>(responseDTO, HttpStatus.OK);
+
             }
         }catch (Exception e){
             responseDTO.setErrorMessage(e.getMessage());

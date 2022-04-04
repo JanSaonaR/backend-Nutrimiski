@@ -4,6 +4,7 @@ import com.upc.backendnutrimiski.models.Child;
 import com.upc.backendnutrimiski.models.MedicalAppointment;
 import com.upc.backendnutrimiski.models.Nutritionist;
 import com.upc.backendnutrimiski.repositories.MedicalAppointmentRepository;
+import com.upc.backendnutrimiski.repositories.NutritionistRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -13,7 +14,8 @@ public class MedicalAppointmentService {
     @Autowired
     MedicalAppointmentRepository medicalAppointmentRepository;
 
-
+    @Autowired
+    NutritionistService nutritionistService;
 
     public MedicalAppointment getActiveMedicalAppointment(Long childId){
         MedicalAppointment medicalAppointment = medicalAppointmentRepository.findActiveMedicalAppointmentByChild(childId);
@@ -33,6 +35,7 @@ public class MedicalAppointmentService {
             medicalAppointmentRepository.save(last);
         }
 
+
         MedicalAppointment medicalAppointment = new MedicalAppointment();
         medicalAppointment.setActive((byte)1);
         medicalAppointment.setStartDate(UtilService.getNowDate());
@@ -40,7 +43,12 @@ public class MedicalAppointmentService {
         medicalAppointment.setNutritionist(nutritionist);
         medicalAppointment.setChild(child);
 
-        return medicalAppointmentRepository.save(medicalAppointment);
+        medicalAppointment = medicalAppointmentRepository.save(medicalAppointment);
+
+        nutritionist.setActiveChildren(nutritionistService.getTotalActiveChildren(nutritionist.getNutritionistId()));
+        nutritionistService.saveNutritionist(nutritionist);
+
+        return medicalAppointment;
     }
 
 

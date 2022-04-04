@@ -17,6 +17,7 @@ public interface MedicalAppointmentRepository extends JpaRepository<MedicalAppoi
     public MedicalAppointment findActiveMedicalAppointmentByChild(Long childId);
 
 
-
+    @Query("select count(m) from MedicalAppointment m where m.nutritionist.nutritionistId = ?1 and m.active = 1")
+    public Integer findTotalActiveChildren(Long nutritionistId);
 
 }

@@ -39,6 +39,10 @@ public class ChildService {
         return childRepository.findById(childId).orElse(null);
     }
 
+    public Child getChildByDni(String dni){
+        return childRepository.findByDni(dni).orElse(null);
+    }
+
     public Child registerChild(RegisterChildRequestDTO request, Parent parent, MultipartFile profilePic) throws IOException {
 
         Child child = new Child();
@@ -82,7 +86,6 @@ public class ChildService {
         childLog.setDate(UtilService.getNowDate());
 
         childLogService.saveChildLog(childLog);
-
 
         return child;
     }

@@ -45,6 +45,15 @@ public class ParentController {
                 return new ResponseEntity<>(responseDTO, HttpStatus.OK);
             }
 
+            Child child  = childService.getChildByDni(request.getDni());
+            if (child != null){
+                responseDTO.setHttpCode(HttpStatus.OK.value());
+                responseDTO.setErrorCode(2);
+                responseDTO.setErrorMessage("El niño ya se encuentra registrado");
+                responseDTO.setData(null);
+                return new ResponseEntity<>(responseDTO, HttpStatus.OK);
+            }
+
             responseDTO.setHttpCode(HttpStatus.CREATED.value());
             responseDTO.setErrorCode(0);
             responseDTO.setErrorMessage("");
@@ -55,12 +64,11 @@ public class ParentController {
         }catch (Exception e){
             responseDTO.setErrorMessage(e.getMessage());
             responseDTO.setHttpCode(HttpStatus.INTERNAL_SERVER_ERROR.value());
-            responseDTO.setErrorCode(2);
+            responseDTO.setErrorCode(3);
             responseDTO.setData(null);
+
+            return new ResponseEntity<>(responseDTO, HttpStatus.INTERNAL_SERVER_ERROR);
         }
-
-        return new ResponseEntity<>(responseDTO, HttpStatus.INTERNAL_SERVER_ERROR);
-
     }
 
 

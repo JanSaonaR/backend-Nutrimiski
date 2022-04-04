@@ -24,5 +24,7 @@ public class Nutritionist {
     @JoinColumn(name = "userId",nullable = false)
     private User user;
 
+    private Integer activeChildren;
+
 
 }

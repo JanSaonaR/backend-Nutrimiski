@@ -3,6 +3,7 @@ package com.upc.backendnutrimiski.services;
 import com.upc.backendnutrimiski.models.Child;
 import com.upc.backendnutrimiski.models.Nutritionist;
 import com.upc.backendnutrimiski.models.Parent;
+import com.upc.backendnutrimiski.repositories.MedicalAppointmentRepository;
 import com.upc.backendnutrimiski.repositories.NutritionistRepository;
 import com.upc.backendnutrimiski.repositories.ParentRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,6 +21,9 @@ public class NutritionistService {
 
     @Autowired
     ParentRepository parentRepository;
+
+    @Autowired
+    MedicalAppointmentRepository medicalAppointmentRepository;
 
 
     public Nutritionist findById(Long nutritionistId){
@@ -57,5 +61,9 @@ public class NutritionistService {
         Random rand = new Random();
         int rand_int = rand.nextInt(nutritionists.size());
         return nutritionists.get(rand_int);
+    }
+
+    public Integer getTotalActiveChildren(Long nutritionistId){
+        return medicalAppointmentRepository.findTotalActiveChildren(nutritionistId);
     }
 }

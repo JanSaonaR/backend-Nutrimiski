@@ -4,6 +4,7 @@ import com.upc.backendnutrimiski.models.Child;
 import com.upc.backendnutrimiski.models.User;
 import com.upc.backendnutrimiski.models.dto.ResponseDTO;
 import com.upc.backendnutrimiski.models.dto.UpdateChildDTO;
+import com.upc.backendnutrimiski.models.dto.Wrapper;
 import com.upc.backendnutrimiski.services.ChildService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -19,6 +20,18 @@ public class ChildController {
 
     @Autowired
     ChildService childService;
+
+
+
+    @PostMapping("/model")
+    public ResponseEntity<?> multiUploadFileModel(@ModelAttribute Wrapper model) {
+
+
+        return new ResponseEntity(model, HttpStatus.OK);
+    }
+
+
+    @PostMapping()
 
     @GetMapping("")
     public ResponseEntity<ResponseDTO<Child>> getChildById(@RequestParam Long childId){
@@ -106,7 +119,7 @@ public class ChildController {
     }
 
     @PostMapping("/picture/upload")
-    public ResponseEntity<ResponseDTO<Child>> subirImagen(@RequestParam("profilePic") MultipartFile profilePic,
+    public ResponseEntity<ResponseDTO<Child>> subirImagen(@RequestParam(value = "profilePic") MultipartFile profilePic,
                                                           @RequestParam("childId") Long childId) throws IOException {
 
         ResponseDTO<Child> responseDTO = new ResponseDTO<>();

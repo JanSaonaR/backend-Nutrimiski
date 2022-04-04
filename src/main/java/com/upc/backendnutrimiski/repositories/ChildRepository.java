@@ -8,6 +8,7 @@ import org.springframework.stereotype.Repository;
 
 import javax.transaction.Transactional;
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface ChildRepository extends JpaRepository<Child, Long> {
@@ -19,6 +20,9 @@ public interface ChildRepository extends JpaRepository<Child, Long> {
     @Modifying
     @Query("DELETE FROM Child c WHERE c.childId= ?1")
     public void deleteByChildId(Long childId);
+
+    @Query("select c from Child c where c.dni = ?1")
+    public Optional<Child> findByDni(String dni);
 
 
 }
