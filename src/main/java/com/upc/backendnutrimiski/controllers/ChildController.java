@@ -30,9 +30,6 @@ public class ChildController {
         return new ResponseEntity(model, HttpStatus.OK);
     }
 
-
-    @PostMapping()
-
     @GetMapping("")
     public ResponseEntity<ResponseDTO<Child>> getChildById(@RequestParam Long childId){
 

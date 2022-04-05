@@ -1,6 +1,7 @@
 package com.upc.backendnutrimiski.controllers;
 
 
+import com.upc.backendnutrimiski.models.Category;
 import com.upc.backendnutrimiski.models.Ingredient;
 import com.upc.backendnutrimiski.services.IngredientService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,6 +21,11 @@ public class IngredientController {
     @GetMapping("")
     public List<Ingredient> getAllIngredients(){
         return ingredientService.getAllIngredients();
+    }
+
+    @GetMapping("/categories")
+    public List<Category> getAllCategories(){
+        return ingredientService.getAllCategories();
     }
 
 
