@@ -45,6 +45,7 @@ public class ChildPreferencesService {
         }
         try {
             childPreferences = childPreferencesRepository.saveAll(childPreferences);
+            return null;
         } catch (Exception e){
             e.printStackTrace();
         }
