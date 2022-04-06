@@ -61,4 +61,8 @@ public class Child implements Serializable {
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true, mappedBy="child")
     private List<ChildLog> childLogs = new ArrayList<>();
 
+    @JsonIgnore
+    @OneToMany(mappedBy = "child", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<ChildPreferences> childPreferences = new ArrayList<>();
+
 }

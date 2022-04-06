@@ -27,51 +27,52 @@ INSERT INTO region(`name`) VALUES ('UCAYALI');
 
 
 
-INSERT INTO category(`name`) VALUES ('CARNES');
-INSERT INTO category(`name`) VALUES ('VERDURAS');
-INSERT INTO category(`name`) VALUES ('MARISCOS');
-INSERT INTO category(`name`) VALUES ('TUBERCULOS');
+INSERT INTO category(`name`) VALUES ('CARBOHIDRATOS');
+INSERT INTO category(`name`) VALUES ('PROTEINAS');
+INSERT INTO category(`name`) VALUES ('GRASAS');
 INSERT INTO category(`name`) VALUES ('FRUTAS');
 
-INSERT INTO ingredient (`name`,`category_id`) VALUES ('CERDO',     4);
-INSERT INTO ingredient (`name`,`category_id`) VALUES ('CABRITO',   4);
-INSERT INTO ingredient (`name`,`category_id`) VALUES ('RES',       4);
-INSERT INTO ingredient (`name`,`category_id`) VALUES ('PESCADO',   4);
-INSERT INTO ingredient (`name`,`category_id`) VALUES ('CORDERO',   4);
-INSERT INTO ingredient (`name`,`category_id`) VALUES ('CUY',       4);
+INSERT INTO ingredient (`name`,`category_id`) VALUES ('papa',   1);
+INSERT INTO ingredient (`name`,`category_id`) VALUES ('arroz',  1);
+INSERT INTO ingredient (`name`,`category_id`) VALUES ('fideo',  1);
+INSERT INTO ingredient (`name`,`category_id`) VALUES ('choclo', 1);
+INSERT INTO ingredient (`name`,`category_id`) VALUES ('lenteja',1);
+INSERT INTO ingredient (`name`,`category_id`) VALUES ('frijol', 1);
+INSERT INTO ingredient (`name`,`category_id`) VALUES ('camote', 1);
+INSERT INTO ingredient (`name`,`category_id`) VALUES ('yuca',   1);
+INSERT INTO ingredient (`name`,`category_id`) VALUES ('avena',  1);
+INSERT INTO ingredient (`name`,`category_id`) VALUES ('quinua', 1);
 
-INSERT INTO ingredient (`name`,`category_id`) VALUES ('ZAPALLO',   14);
-INSERT INTO ingredient (`name`,`category_id`) VALUES ('CHOCLO',    14);
-INSERT INTO ingredient (`name`,`category_id`) VALUES ('APIO',      14);
-INSERT INTO ingredient (`name`,`category_id`) VALUES ('BETERRAGA', 14);
-INSERT INTO ingredient (`name`,`category_id`) VALUES ('TOMATE',    14);
-INSERT INTO ingredient (`name`,`category_id`) VALUES ('ACEITUNA',  14);
-INSERT INTO ingredient (`name`,`category_id`) VALUES ('CULANTRO',  14);
-INSERT INTO ingredient (`name`,`category_id`) VALUES ('BROCOLI',   14);
-INSERT INTO ingredient (`name`,`category_id`) VALUES ('CAIGUA',    14);
+INSERT INTO ingredient (`name`,`category_id`) VALUES ('pollo',   2);
+INSERT INTO ingredient (`name`,`category_id`) VALUES ('carne',   2);
+INSERT INTO ingredient (`name`,`category_id`) VALUES ('huevo',   2);
+INSERT INTO ingredient (`name`,`category_id`) VALUES ('pescado', 2);
+INSERT INTO ingredient (`name`,`category_id`) VALUES ('atún',    2);
+INSERT INTO ingredient (`name`,`category_id`) VALUES ('pavita',  2);
+INSERT INTO ingredient (`name`,`category_id`) VALUES ('cerdo',   2);
+INSERT INTO ingredient (`name`,`category_id`) VALUES ('jamón',   2);
+INSERT INTO ingredient (`name`,`category_id`) VALUES ('leche',   2);
+INSERT INTO ingredient (`name`,`category_id`) VALUES ('yogurt',  2);
 
-INSERT INTO ingredient (`name`,`category_id`) VALUES ('CANGREJO',   24);
-INSERT INTO ingredient (`name`,`category_id`) VALUES ('LANGOSTINO', 24);
-INSERT INTO ingredient (`name`,`category_id`) VALUES ('CHORO',      24);
-INSERT INTO ingredient (`name`,`category_id`) VALUES ('ALMEJA',     24);
-INSERT INTO ingredient (`name`,`category_id`) VALUES ('CAMARON',    24);
-
-INSERT INTO ingredient (`name`,`category_id`) VALUES ('CAMOTE',    34);
-INSERT INTO ingredient (`name`,`category_id`) VALUES ('OLLUCO',    34);
-INSERT INTO ingredient (`name`,`category_id`) VALUES ('PAPA',      34);
-INSERT INTO ingredient (`name`,`category_id`) VALUES ('YUCA',      34);
-
-INSERT INTO ingredient (`name`,`category_id`) VALUES ('MANZANA',   44);
-INSERT INTO ingredient (`name`,`category_id`) VALUES ('PIÑA',      44);
-INSERT INTO ingredient (`name`,`category_id`) VALUES ('NARANJA',   44);
-INSERT INTO ingredient (`name`,`category_id`) VALUES ('PAPAYA',    44);
-INSERT INTO ingredient (`name`,`category_id`) VALUES ('MANDARINA', 44);
-INSERT INTO ingredient (`name`,`category_id`) VALUES ('TUNA',      44);
-INSERT INTO ingredient (`name`,`category_id`) VALUES ('PLATANO',   44);
-INSERT INTO ingredient (`name`,`category_id`) VALUES ('CARAMBOLA', 44);
+INSERT INTO ingredient (`name`,`category_id`) VALUES ('palta',      3);
+INSERT INTO ingredient (`name`,`category_id`) VALUES ('aceituna',   3);
+INSERT INTO ingredient (`name`,`category_id`) VALUES ('leche',      3);
+INSERT INTO ingredient (`name`,`category_id`) VALUES ('mantequilla',3);
+INSERT INTO ingredient (`name`,`category_id`) VALUES ('queso',      3);
+INSERT INTO ingredient (`name`,`category_id`) VALUES ('coco',       3);
 
 
-
+INSERT INTO ingredient (`name`,`category_id`) VALUES ('naranja',    4);
+INSERT INTO ingredient (`name`,`category_id`) VALUES ('mandarina',  4);
+INSERT INTO ingredient (`name`,`category_id`) VALUES ('maracuyá',   4);
+INSERT INTO ingredient (`name`,`category_id`) VALUES ('manzana',    4);
+INSERT INTO ingredient (`name`,`category_id`) VALUES ('plátano',    4);
+INSERT INTO ingredient (`name`,`category_id`) VALUES ('uva',        4);
+INSERT INTO ingredient (`name`,`category_id`) VALUES ('cocona',     4);
+INSERT INTO ingredient (`name`,`category_id`) VALUES ('mango',      4);
+INSERT INTO ingredient (`name`,`category_id`) VALUES ('papaya',     4);
+INSERT INTO ingredient (`name`,`category_id`) VALUES ('granadilla', 4);
+INSERT INTO ingredient (`name`,`category_id`) VALUES ('piña',       4);
 
 INSERT INTO personal_treatment(`active`, `end_date`, `start_date`, `doctor_id`, `patient_id`)
 VALUES (1,now(),now(), 4,4);

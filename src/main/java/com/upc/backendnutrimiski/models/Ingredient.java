@@ -1,10 +1,13 @@
 package com.upc.backendnutrimiski.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "ingredient")
@@ -21,8 +24,13 @@ public class Ingredient {
     @Column(length = 100)
     private String name;
 
-    @ManyToOne(optional = false, cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    @JoinColumn(name = "categoryId",nullable = true)
+    @ManyToOne
+    @JoinColumn(name = "categoryId",nullable = false)
     private Category category;
+
+
+    @JsonIgnore
+    @OneToMany(mappedBy = "ingredient", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<ChildPreferences> childPreferences = new ArrayList<>();
 
 }

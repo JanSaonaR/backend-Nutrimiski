@@ -19,6 +19,7 @@ public class ChildPreferences {
     @Column(unique = true, nullable = false)
     private Long childPreferencesId;
 
+
     @ManyToOne
     @JoinColumn(name = "childId",nullable = false)
     private Child child;

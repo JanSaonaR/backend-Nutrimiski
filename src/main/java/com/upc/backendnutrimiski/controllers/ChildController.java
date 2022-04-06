@@ -95,6 +95,9 @@ public class ChildController {
                 responseDTO.setErrorCode(1);
                 responseDTO.setErrorMessage("No existe el niño");
                 responseDTO.setData(null);
+
+                return new ResponseEntity<>(responseDTO, HttpStatus.OK);
+
             }
 
             responseDTO.setHttpCode(HttpStatus.OK.value());
