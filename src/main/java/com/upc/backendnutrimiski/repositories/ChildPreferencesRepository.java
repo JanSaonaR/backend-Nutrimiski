@@ -20,4 +20,7 @@ public interface ChildPreferencesRepository extends JpaRepository<ChildPreferenc
     public List<Ingredient> findByPreferencesByChild(Long childId);
 
 
+    @Query("select c.ingredient.name from ChildPreferences c where c.child.childId = ?1")
+    public List<String> findPreferencesNameByChild(Long childId);
+
 }

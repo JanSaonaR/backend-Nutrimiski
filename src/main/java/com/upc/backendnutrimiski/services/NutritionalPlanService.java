@@ -1,9 +1,15 @@
 package com.upc.backendnutrimiski.services;
 
 import com.upc.backendnutrimiski.models.*;
+import com.upc.backendnutrimiski.models.api.ApiDishesRequest;
+import com.upc.backendnutrimiski.models.api.ApiDishesResponse;
 import com.upc.backendnutrimiski.repositories.NutritionalPlanRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,6 +31,9 @@ public class NutritionalPlanService {
 
     @Autowired
     NutritionistService nutritionistService;
+
+    @Autowired
+    ChildPreferencesService childPreferencesService;
 
 
     public NutritionalPlan getActiveNutritionalPlan(Long childId){
@@ -62,7 +71,7 @@ public class NutritionalPlanService {
         nutritionalPlan =  nutritionalPlanRepository.save(nutritionalPlan);
 
         System.out.println("Generando comidas...");
-        generateMeals(nutritionalPlan);
+        generateMealsTest(nutritionalPlan);
         System.out.println("Comidas generadas...");
 
         Nutritionist nutritionist = medicalAppointment.getNutritionist();
@@ -73,6 +82,58 @@ public class NutritionalPlanService {
     }
 
     public List<Meal> generateMeals(NutritionalPlan nutritionalPlan){
+
+        String url = "https://dieta-api.herokuapp.com/api/v1.0/diets";
+
+        RestTemplate restTemplate = new RestTemplate();
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+
+        Child child = nutritionalPlan.getMedicalAppointment().getChild();
+
+        ApiDishesRequest apiRequest = new ApiDishesRequest();
+        apiRequest.setAge(child.getAge());
+        apiRequest.setWeight((double) child.getWeight());
+        apiRequest.setHeight((int) child.getHeight());
+        apiRequest.setSex(child.getSex());
+        apiRequest.setDays(30);
+        apiRequest.setActivity(child.getActivity() == null ? "sedentario" : child.getActivity());
+        List<String> preferences = childPreferencesService.getListOfPreferencesNameByChild(child.getChildId());
+        apiRequest.setPreference(preferences);
+
+        System.out.println(apiRequest);
+        HttpEntity<ApiDishesRequest> httpEntity = new HttpEntity<>(apiRequest, headers);
+        System.out.println(httpEntity);
+
+        ApiDishesResponse dishes =  restTemplate.postForObject(url, httpEntity, ApiDishesResponse.class);
+
+        List<Meal> meals = new ArrayList<>();
+
+        for (int i = 0; i < apiRequest.getDays()*3; i++){
+            Meal meal = new Meal();
+            meal.setName(dishes.getAlimento().get(i));
+            meal.setProtein(dishes.getProteinas().get(i));
+            meal.setFat(dishes.getGrasas().get(i));
+            meal.setCarbohydrates(dishes.getCarbohidratos().get(i));
+            meal.setGramsPortion(dishes.getCantidad_Gramos_Consumir().get(i));
+            //dishes.getNivel_Preferencia().get(i);
+            meal.setSchedule(dishes.getTipo().get(i));
+            meal.setDay(UtilService.getNowDateMealsWhitAddDays((i/3) + 1));
+            meal.setStatus((byte) 0);
+            meal.setNutritionalPlan(nutritionalPlan);
+            String result = String.join("-", dishes.getIngredientes().get(i));
+            meal.setIngredients(result);
+            meal.setImageUrl(dishes.getImage_url().get(i).toString());
+            meal.setImageUrl("");
+            meal.setTotalCalories(dishes.getTotal_Calorias().get(i));
+
+            meals.add(meal);
+        }
+        return mealService.saveListOfMeals(meals);
+    }
+
+    public List<Meal> generateMealsTest(NutritionalPlan nutritionalPlan){
         Integer calories = nutritionalPlan.getCaloriesPlan();
         Integer weight = (int) nutritionalPlan.getWeightPatient();
         List<Meal> meals = new ArrayList<>();
@@ -96,5 +157,6 @@ public class NutritionalPlanService {
         }
         return meals;
     }
+
 
 }

@@ -22,4 +22,7 @@ public interface NutritionistRepository extends JpaRepository<Nutritionist, Long
     @Query("select m.child from MedicalAppointment m where m.nutritionist.nutritionistId = ?1 and m.active = 1")
     public List<Child> findActiveChildren(Long nutritionistId);
 
+    @Query(value = "Select n.* from nutritionist n JOIN medical_appointment ma ON n.nutritionist_id = ma.nutritionist_id JOIN child c ON ma.child_id = c.child_id WHERE c.parent_id = ?1 and ma.active = 1 GROUP BY n.nutritionist_id", nativeQuery = true)
+    public List<Nutritionist> findActiveNutritionistByParent(Long parentId);
+
 }

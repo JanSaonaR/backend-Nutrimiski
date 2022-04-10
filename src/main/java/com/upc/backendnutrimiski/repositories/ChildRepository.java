@@ -1,6 +1,7 @@
 package com.upc.backendnutrimiski.repositories;
 
 import com.upc.backendnutrimiski.models.Child;
+import com.upc.backendnutrimiski.models.Nutritionist;
 import com.upc.backendnutrimiski.models.Parent;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
@@ -27,5 +28,9 @@ public interface ChildRepository extends JpaRepository<Child, Long> {
 
     @Query("select c.parent.children from Child c where c.childId = ?1")
     public List<Child> findBrothers(Long childId);
+
+
+    @Query("select ma.nutritionist from MedicalAppointment ma where ma.child.childId = ?1 and ma.active = 1")
+    public Nutritionist getActiveNutritionist(Long childId);
 
 }

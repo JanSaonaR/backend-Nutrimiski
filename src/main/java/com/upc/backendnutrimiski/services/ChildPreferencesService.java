@@ -27,6 +27,11 @@ public class ChildPreferencesService {
         return  childPreferencesRepository.findByPreferencesByChild(childId);
     }
 
+
+    public List<String> getListOfPreferencesNameByChild(Long childId){
+        return  childPreferencesRepository.findPreferencesNameByChild(childId);
+    }
+
     public ChildPreferences saveListOfPreferences(List<IngredientPreferenceDTO> ingredients, Child child){
 
         List<ChildPreferences> childPreferences = new ArrayList<>();

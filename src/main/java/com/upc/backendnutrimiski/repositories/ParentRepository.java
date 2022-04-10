@@ -20,4 +20,7 @@ public interface ParentRepository extends JpaRepository<Parent,Long> {
 
     @Query("select p from Parent p where p.parentId in ?1")
     public List<Parent> findByParentIdIn(List<Long> parentIds);
+
+
+
 }

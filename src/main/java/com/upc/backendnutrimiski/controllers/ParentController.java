@@ -1,10 +1,12 @@
 package com.upc.backendnutrimiski.controllers;
 
 import com.upc.backendnutrimiski.models.Child;
+import com.upc.backendnutrimiski.models.Nutritionist;
 import com.upc.backendnutrimiski.models.Parent;
 import com.upc.backendnutrimiski.models.dto.RegisterChildRequestDTO;
 import com.upc.backendnutrimiski.models.dto.ResponseDTO;
 import com.upc.backendnutrimiski.services.ChildService;
+import com.upc.backendnutrimiski.services.NutritionistService;
 import com.upc.backendnutrimiski.services.ParentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -23,6 +25,9 @@ public class ParentController {
 
     @Autowired
     ChildService childService;
+
+    @Autowired
+    NutritionistService nutritionistService;
 
     @GetMapping("/children")
     public List<Child> getChildrenOfParent(@RequestParam Long parentId){
@@ -100,4 +105,26 @@ public class ParentController {
         return null;
     }
 
+
+    @GetMapping("/activeNutritionists")
+    public ResponseEntity<ResponseDTO<List<Nutritionist>>> getActiveNutritionist(@RequestParam Long parentId){
+        ResponseDTO<List<Nutritionist>> responseDTO = new ResponseDTO<>();
+
+        try {
+            responseDTO.setHttpCode(HttpStatus.OK.value());
+            responseDTO.setErrorCode(0);
+            responseDTO.setErrorMessage("");
+            responseDTO.setData(parentService.getActiveNutritionists(parentId));
+
+            return new ResponseEntity<>(responseDTO, HttpStatus.OK);
+
+        }catch (Exception e){
+            responseDTO.setHttpCode(HttpStatus.INTERNAL_SERVER_ERROR.value());
+            responseDTO.setErrorCode(1);
+            responseDTO.setErrorMessage(e.getMessage());
+            responseDTO.setData(null);
+            return new ResponseEntity<>(responseDTO, HttpStatus.INTERNAL_SERVER_ERROR);
+
+        }
+    }
 }

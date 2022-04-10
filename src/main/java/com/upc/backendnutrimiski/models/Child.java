@@ -44,9 +44,12 @@ public class Child implements Serializable {
     @Column(length = 8)
     private String dni;
 
-    //H-M
+    //(F)emenino-(M)asculino
     @Column(length = 1, nullable = false)
     private String sex;
+
+    @Column
+    private String activity;
 
     @JsonIgnoreProperties({"children","user"})
     @ManyToOne

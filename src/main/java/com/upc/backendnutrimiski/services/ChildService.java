@@ -30,6 +30,8 @@ public class ChildService {
     @Autowired
     PictureService pictureService;
 
+    @Autowired
+    NutritionistService nutritionistService;
 
     public List<Child> getChildrenByParent(Long parentId){
         return childRepository.findByParent(parentId);
@@ -160,6 +162,10 @@ public class ChildService {
             return result.get("result").toString();
         }
         return "El usuario no tiene foto de perfil";
+    }
+
+    public Nutritionist getActiveNutritionist(Long childId){
+        return childRepository.getActiveNutritionist(childId);
     }
 
 }

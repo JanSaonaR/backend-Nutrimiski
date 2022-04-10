@@ -23,6 +23,11 @@ public class MealService {
         return mealRepository.save(meal);
     }
 
+    public List<Meal> saveListOfMeals(List<Meal> meals){
+        return mealRepository.saveAll(meals);
+    }
+
+
     public List<Meal> getMealsByDay(LocalDate date, Long patientId){
         return  mealRepository.findMealsByDateByChild(date,patientId);
     }

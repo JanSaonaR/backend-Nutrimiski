@@ -20,4 +20,5 @@ public class RegisterChildRequestDTO {
     private LocalDate birthDate;
     private String dni;
     private String sex;
+    private String activity;
 }
