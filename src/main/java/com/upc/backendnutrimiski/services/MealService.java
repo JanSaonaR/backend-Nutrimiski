@@ -51,9 +51,9 @@ public class MealService {
         for (int i = 0; i < 3; i++){
             Meal meal = new Meal();
             meal.setDay(UtilService.getNowDateMealsWhitAddDays(i+1));
-            meal.setFat(20 + i);
-            meal.setProtein(150 + i);
-            meal.setCarbohydrates(500 + i);
+            meal.setFat((double) (20 + i));
+            meal.setProtein((double) (150 + i));
+            meal.setCarbohydrates((double) (500 + i));
             meal.setGramsPortion(300 + i);
             meal.setImageUrl("");
             meal.setIngredients("Platano " + i);
@@ -77,9 +77,9 @@ public class MealService {
         originalMeal.setFat(requestMeal.getFat());
         originalMeal.setProtein(requestMeal.getProtein());
         originalMeal.setCarbohydrates(requestMeal.getCarbohydrates());
-        originalMeal.setGramsPortion(requestMeal.getGramsPortion());
+        originalMeal.setGramsPortion((int) requestMeal.getGramsPortion());
         originalMeal.setImageUrl(requestMeal.getImageUrl());
-        originalMeal.setTotalCalories(requestMeal.getTotalCalories());
+        originalMeal.setTotalCalories((int) requestMeal.getTotalCalories());
 
         return mealRepository.save(originalMeal);
     }

@@ -4,23 +4,24 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 public class ApiDishesResponse {
 
-    List<String> Alimento;
-    List<Double> Proteinas;
-    List<Double> Grasas;
-    List<Double> Carbohidratos;
-    List<Integer> Cantidad_Gramos_Consumir;
-    List<Integer> Total_Calorias;
-    List<List<String>> Ingredientes;
-    List<Integer> Nivel_Preferencia;
-    List<String> Image_url;
-    List<String> Tipo;
-
+    HashMap<String,String> Alimento ;
+    HashMap<String,String> Proteinas;
+    HashMap<String,String> Grasas;
+    HashMap<String,String> Carbohidratos;
+    HashMap<String,String> Cantidad_Gramos_Consumir;
+    HashMap<String,String> Total_Calorias;
+    HashMap<String,String> Ingredientes;
+    HashMap<String,String> Nivel_Preferencia;
+    HashMap<String,String> Image_url;
+    HashMap<String,String> Tipo;
 
 }

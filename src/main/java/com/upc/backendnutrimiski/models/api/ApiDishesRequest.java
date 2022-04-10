@@ -12,7 +12,7 @@ import java.util.List;
 public class ApiDishesRequest {
 
         Integer age;
-        Double weight;
+        Integer weight;
         Integer height;
         String activity;
         String sex;

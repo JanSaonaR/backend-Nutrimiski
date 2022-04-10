@@ -32,17 +32,17 @@ public class Meal {
 
     private String name;
 
-    private double protein;
+    private Double protein;
 
-    private double fat;
+    private Double fat;
 
-    private double carbohydrates;
+    private Double carbohydrates;
 
     private String ingredients;
 
-    private double totalCalories;
+    private Integer totalCalories;
 
-    private double gramsPortion;
+    private Integer gramsPortion;
 
     private String imageUrl;
 

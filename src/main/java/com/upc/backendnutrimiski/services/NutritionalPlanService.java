@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 @Service
@@ -71,7 +72,7 @@ public class NutritionalPlanService {
         nutritionalPlan =  nutritionalPlanRepository.save(nutritionalPlan);
 
         System.out.println("Generando comidas...");
-        generateMealsTest(nutritionalPlan);
+        generateMeals(nutritionalPlan);
         System.out.println("Comidas generadas...");
 
         Nutritionist nutritionist = medicalAppointment.getNutritionist();
@@ -81,7 +82,7 @@ public class NutritionalPlanService {
         return nutritionalPlan;
     }
 
-    public List<Meal> generateMeals(NutritionalPlan nutritionalPlan){
+    public List<Meal> generateMeals(NutritionalPlan nutritionalPlan) {
 
         String url = "https://dieta-api.herokuapp.com/api/v1.0/diets";
 
@@ -94,41 +95,69 @@ public class NutritionalPlanService {
 
         ApiDishesRequest apiRequest = new ApiDishesRequest();
         apiRequest.setAge(child.getAge());
-        apiRequest.setWeight((double) child.getWeight());
+        apiRequest.setWeight((int) child.getWeight());
         apiRequest.setHeight((int) child.getHeight());
         apiRequest.setSex(child.getSex());
         apiRequest.setDays(30);
         apiRequest.setActivity(child.getActivity() == null ? "sedentario" : child.getActivity());
-        List<String> preferences = childPreferencesService.getListOfPreferencesNameByChild(child.getChildId());
+        List<String> preferences = new ArrayList<>();
+        // preferences  = childPreferencesService.getListOfPreferencesNameByChild(child.getChildId());
         apiRequest.setPreference(preferences);
 
         System.out.println(apiRequest);
         HttpEntity<ApiDishesRequest> httpEntity = new HttpEntity<>(apiRequest, headers);
         System.out.println(httpEntity);
 
-        ApiDishesResponse dishes =  restTemplate.postForObject(url, httpEntity, ApiDishesResponse.class);
+        HashMap<String, HashMap<String, Object>> dishes = restTemplate.postForObject(url, httpEntity, HashMap.class);
+
+        //ApiDishesResponse dishes = restTemplate.postForObject(url, httpEntity, ApiDishesResponse.class);
 
         List<Meal> meals = new ArrayList<>();
 
-        for (int i = 0; i < apiRequest.getDays()*3; i++){
-            Meal meal = new Meal();
-            meal.setName(dishes.getAlimento().get(i));
-            meal.setProtein(dishes.getProteinas().get(i));
-            meal.setFat(dishes.getGrasas().get(i));
-            meal.setCarbohydrates(dishes.getCarbohidratos().get(i));
-            meal.setGramsPortion(dishes.getCantidad_Gramos_Consumir().get(i));
-            //dishes.getNivel_Preferencia().get(i);
-            meal.setSchedule(dishes.getTipo().get(i));
-            meal.setDay(UtilService.getNowDateMealsWhitAddDays((i/3) + 1));
-            meal.setStatus((byte) 0);
-            meal.setNutritionalPlan(nutritionalPlan);
-            String result = String.join("-", dishes.getIngredientes().get(i));
-            meal.setIngredients(result);
-            meal.setImageUrl(dishes.getImage_url().get(i).toString());
-            meal.setImageUrl("");
-            meal.setTotalCalories(dishes.getTotal_Calorias().get(i));
+        System.out.println(dishes.get("Alimento"));
+        System.out.println(dishes.get("Alimento").get("0"));
+        String index = "0";
+        Integer d = 0;
+        Integer a = apiRequest.getDays() -1;
+        Integer c = apiRequest.getDays()*2 -1;
 
-            meals.add(meal);
+        for (int i = 0; i < apiRequest.getDays(); i++){
+            for (int j = 0; j< 3; j++){
+                index = Integer.toString(i + (j * apiRequest.getDays()));
+                Meal meal = new Meal();
+                meal.setName                    ((String) dishes.get("Alimento").get(index));
+                meal.setProtein                 ((Double) dishes.get("Proteinas").get(index));
+                meal.setFat                     ((Double) dishes.get("Grasas").get(index));
+                meal.setCarbohydrates           ((Double) dishes.get("Carbohidratos").get(index));
+                meal.setGramsPortion            ((Integer) dishes.get("Cantidad_Gramos_Consumir").get(index));
+                //(dishes.get("Nivel_Preferencia").get(i));
+                meal.setSchedule                ((String) dishes.get("Tipo").get(index));
+                meal.setDay(UtilService.getNowDateMealsWhitAddDays((i/3) + 1));
+                meal.setStatus((byte) 0);
+                meal.setNutritionalPlan(nutritionalPlan);
+                String result = String.join("-", ((ArrayList<String>) dishes.get("Ingredientes").get(index)));
+                meal.setIngredients(result);
+                meal.setImageUrl                ((String) dishes.get("Image_url").get(index));
+                meal.setTotalCalories           ((Integer) dishes.get("Total_Calorias").get(index));
+                meals.add(meal);
+            }
+//            index = Integer.toString(i);
+//            Meal meal = new Meal();
+//            meal.setName                    ((String) dishes.get("Alimento").get(index));
+//            meal.setProtein                 ((Double) dishes.get("Proteinas").get(index));
+//            meal.setFat                     ((Double) dishes.get("Grasas").get(index));
+//            meal.setCarbohydrates           ((Double) dishes.get("Carbohidratos").get(index));
+//            meal.setGramsPortion            ((Integer) dishes.get("Cantidad_Gramos_Consumir").get(index));
+//            //(dishes.get("Nivel_Preferencia").get(i));
+//            meal.setSchedule                ((String) dishes.get("Tipo").get(index));
+//            meal.setDay(UtilService.getNowDateMealsWhitAddDays((i/3) + 1));
+//            meal.setStatus((byte) 0);
+//            meal.setNutritionalPlan(nutritionalPlan);
+//            String result = String.join("-", ((ArrayList<String>) dishes.get("Ingredientes").get(index)));
+//            meal.setIngredients(result);
+//            meal.setImageUrl                ((String) dishes.get("Image_url").get(index));
+//            meal.setTotalCalories           ((Integer) dishes.get("Total_Calorias").get(index));
+//            meals.add(meal);
         }
         return mealService.saveListOfMeals(meals);
     }
@@ -141,9 +170,9 @@ public class NutritionalPlanService {
             for (int j = 0; j< 3; j++) {
                 Meal meal = new Meal();
                 meal.setDay(UtilService.getNowDateMealsWhitAddDays(i + 1));
-                meal.setFat(30);
-                meal.setProtein(150);
-                meal.setCarbohydrates(500);
+                meal.setFat(30.);
+                meal.setProtein(150.);
+                meal.setCarbohydrates(500.);
                 meal.setGramsPortion(300);
                 meal.setImageUrl("");
                 meal.setIngredients("Platano-Platano2");

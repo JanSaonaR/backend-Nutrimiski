@@ -42,9 +42,6 @@ public class NutritionistService {
         return nutritionistRepository.save(nutritionist);
     }
 
-    public List<Child> getChildren(){
-        return null;
-    }
 
     public List<Parent> getActiveParents(Long nutritionistId){
         List<Long> ids = nutritionistRepository.findActivesParents(nutritionistId);
@@ -67,6 +64,10 @@ public class NutritionistService {
         return nutritionists.get(rand_int);
     }
 
+    public  Nutritionist getLessBusyNutritionist(){
+        return nutritionistRepository.findLessBusyNutritionist();
+    }
+
     public  Nutritionist getFamilyNutritionist(Child child){
         List<Child> children = childRepository.findBrothers(child.getChildId());
         List<Long> childrenIds = new ArrayList<>();
@@ -78,7 +79,7 @@ public class NutritionistService {
             return findById(nutritionistId);
         }
         else{
-            return getRandomNutritionist();
+            return getLessBusyNutritionist();
         }
     }
 
