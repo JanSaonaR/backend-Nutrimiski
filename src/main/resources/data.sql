@@ -1,4 +1,4 @@
-INSERT INTO category(`category_id`,`name`) VALUES (1,'CEREALSES, TUBERCULOS Y MENESTRAS');
+INSERT INTO category(`category_id`,`name`) VALUES (1,'CEREALES, TUBÉRCULOS Y MENESTRAS');
 INSERT INTO category(`category_id`,`name`) VALUES (2,'CARNES');
 INSERT INTO category(`category_id`,`name`) VALUES (3,'LÁCTEOS Y DERIVADOS');
 INSERT INTO category(`category_id`,`name`) VALUES (4,'GRASAS');
@@ -38,7 +38,7 @@ INSERT INTO ingredient (`ingredient_id`,`name`,`category_id`) VALUES (27,'NARANJ
 INSERT INTO ingredient (`ingredient_id`,`name`,`category_id`) VALUES (28,'MANDARINA',  5);
 INSERT INTO ingredient (`ingredient_id`,`name`,`category_id`) VALUES (29,'MARACUYÁ',   5);
 INSERT INTO ingredient (`ingredient_id`,`name`,`category_id`) VALUES (30,'MANZANA',    5);
-INSERT INTO ingredient (`ingredient_id`,`name`,`category_id`) VALUES (31,'plátano',    5);
+INSERT INTO ingredient (`ingredient_id`,`name`,`category_id`) VALUES (31,'PLÁTANO',    5);
 INSERT INTO ingredient (`ingredient_id`,`name`,`category_id`) VALUES (32,'UVA',        5);
 INSERT INTO ingredient (`ingredient_id`,`name`,`category_id`) VALUES (33,'COCONA',     5);
 INSERT INTO ingredient (`ingredient_id`,`name`,`category_id`) VALUES (34,'MANGO',      5);

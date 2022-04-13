@@ -56,6 +56,7 @@ public class Child implements Serializable {
     @JoinColumn(name = "parentId",nullable = false)
     private Parent parent;
 
+    @JsonIgnore
     @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
     @JoinColumn(name = "pictureId", nullable = true)
     private Picture picture;
