@@ -10,6 +10,7 @@ import lombok.ToString;
 import org.hibernate.annotations.Cascade;
 
 import javax.persistence.*;
+import javax.print.attribute.standard.Media;
 import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -68,5 +69,10 @@ public class Child implements Serializable {
     @JsonIgnore
     @OneToMany(mappedBy = "child", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ChildPreferences> childPreferences = new ArrayList<>();
+
+
+    @JsonIgnore
+    @OneToMany(mappedBy = "child", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<MedicalAppointment> medicalAppointments = new ArrayList<>();
 
 }

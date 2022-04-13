@@ -5,6 +5,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "nutritionist")
@@ -23,6 +25,10 @@ public class Nutritionist {
     @OneToOne(optional = false, cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JoinColumn(name = "userId",nullable = false)
     private User user;
+
+
+    @OneToMany(mappedBy = "nutritionist", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<MedicalAppointment> medicalAppointments = new ArrayList<>();
 
     private Integer activeChildren;
 

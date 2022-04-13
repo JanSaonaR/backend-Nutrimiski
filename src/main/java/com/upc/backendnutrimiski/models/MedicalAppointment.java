@@ -1,12 +1,15 @@
 package com.upc.backendnutrimiski.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 @Entity
 @Table(name = "medicalAppointment")
@@ -33,5 +36,9 @@ public class MedicalAppointment {
     private LocalDate endDate;
 
     private Byte active;
+
+    @JsonIgnore
+    @OneToMany(mappedBy = "medicalAppointment", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<NutritionalPlan> nutritionalPlans = new ArrayList<>();
 
 }

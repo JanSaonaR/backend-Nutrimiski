@@ -30,8 +30,35 @@ public class ParentController {
     NutritionistService nutritionistService;
 
     @GetMapping("/children")
-    public List<Child> getChildrenOfParent(@RequestParam Long parentId){
-        return parentService.findChildrenByParent(parentId);
+    public ResponseEntity<ResponseDTO<List<Child>>> getChildrenOfParent(@RequestParam Long parentId){
+        ResponseDTO<List<Child>> responseDTO = new ResponseDTO<>();
+
+        try{
+            Parent parent = parentService.findById(parentId);
+            if (parent == null){
+                responseDTO.setHttpCode(HttpStatus.OK.value());
+                responseDTO.setErrorCode(1);
+                responseDTO.setErrorMessage("El padre no existe.");
+                responseDTO.setData(null);
+
+                return new ResponseEntity<>(responseDTO, HttpStatus.OK);            }
+
+            List<Child> children = parentService.findChildrenByParent(parentId);
+            responseDTO.setHttpCode(HttpStatus.OK.value());
+            responseDTO.setErrorCode(0);
+            responseDTO.setErrorMessage("");
+            responseDTO.setData(children);
+
+            return new ResponseEntity<>(responseDTO, HttpStatus.OK);
+        }catch (Exception e){
+
+            responseDTO.setHttpCode(HttpStatus.INTERNAL_SERVER_ERROR.value());
+            responseDTO.setErrorCode(2);
+            responseDTO.setErrorMessage(e.getMessage());
+            responseDTO.setData(null);
+            return new ResponseEntity<>(responseDTO, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+
     }
 
     @PostMapping(value = "/registerChild", consumes = {"multipart/form-data"})

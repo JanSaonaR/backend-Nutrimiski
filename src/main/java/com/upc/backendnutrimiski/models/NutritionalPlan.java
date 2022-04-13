@@ -1,10 +1,13 @@
 package com.upc.backendnutrimiski.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "nutritionalPlan")
@@ -27,5 +30,9 @@ public class NutritionalPlan {
     private double weightPatient;
 
     private Byte isActive;
+
+    @JsonIgnore
+    @OneToMany(mappedBy = "nutritionalPlan", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Meal> meals = new ArrayList<>();
 
 }
