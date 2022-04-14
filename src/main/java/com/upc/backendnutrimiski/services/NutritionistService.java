@@ -76,6 +76,9 @@ public class NutritionistService {
                 childrenIds.add(childAux.getChildId());
             }
             Long nutritionistId = medicalAppointmentRepository.findFamilyNutritionist(childrenIds);
+            if (nutritionistId == null){
+                return getLessBusyNutritionist();
+            }
             return findById(nutritionistId);
         }
         else{

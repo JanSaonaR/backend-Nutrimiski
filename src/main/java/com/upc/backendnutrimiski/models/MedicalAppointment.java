@@ -27,7 +27,7 @@ public class MedicalAppointment {
     @JoinColumn(name = "childId",nullable = false)
     private Child child;
 
-    @ManyToOne(optional = false, cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @ManyToOne(optional = false, cascade = CascadeType.PERSIST, fetch = FetchType.EAGER)
     @JoinColumn(name = "nutritionistId",nullable = false)
     private Nutritionist nutritionist;
 

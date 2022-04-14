@@ -32,7 +32,7 @@ public class NutritionalPlanController {
             Child child = childService.getChildById(childId);
             if (child == null){
                 responseDTO.setHttpCode(HttpStatus.OK.value());
-                responseDTO.setErrorCode(2);
+                responseDTO.setErrorCode(1);
                 responseDTO.setErrorMessage("El niño no se encuentra registrado");
                 responseDTO.setData(null);
                 return new ResponseEntity<>(responseDTO, HttpStatus.OK);

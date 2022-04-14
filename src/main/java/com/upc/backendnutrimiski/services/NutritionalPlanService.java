@@ -57,6 +57,7 @@ public class NutritionalPlanService {
             medicalAppointment.setChild(child);
             medicalAppointment.setStartDate(UtilService.getNowDate());
             medicalAppointment.setNutritionist(nutritionistService.getFamilyNutritionist(child));
+            medicalAppointment.setNutritionalPlans(null);
             medicalAppointment = medicalAppointmentService.saveMedicalAppointment(medicalAppointment);
         }
 
