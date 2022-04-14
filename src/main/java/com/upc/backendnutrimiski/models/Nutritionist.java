@@ -1,5 +1,6 @@
 package com.upc.backendnutrimiski.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -22,11 +23,12 @@ public class Nutritionist {
 
     private String collegiate;
 
+
     @OneToOne(optional = false, cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JoinColumn(name = "userId",nullable = false)
     private User user;
 
-
+    @JsonIgnore
     @OneToMany(mappedBy = "nutritionist", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<MedicalAppointment> medicalAppointments = new ArrayList<>();
 
