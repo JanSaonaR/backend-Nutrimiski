@@ -118,9 +118,6 @@ public class NutritionalPlanService {
         System.out.println(dishes.get("Alimento"));
         System.out.println(dishes.get("Alimento").get("0"));
         String index = "0";
-        Integer d = 0;
-        Integer a = apiRequest.getDays() -1;
-        Integer c = apiRequest.getDays()*2 -1;
 
         for (int i = 0; i < apiRequest.getDays(); i++){
             for (int j = 0; j< 3; j++){
@@ -133,7 +130,7 @@ public class NutritionalPlanService {
                 meal.setGramsPortion            ((Integer) dishes.get("Cantidad_Gramos_Consumir").get(index));
                 //(dishes.get("Nivel_Preferencia").get(i));
                 meal.setSchedule                ((String) dishes.get("Tipo").get(index));
-                meal.setDay(UtilService.getNowDateMealsWhitAddDays((i/3) + 1));
+                meal.setDay(UtilService.getNowDateMealsWhitAddDays(i+1));
                 meal.setStatus((byte) 0);
                 meal.setNutritionalPlan(nutritionalPlan);
                 String result = String.join("-", ((ArrayList<String>) dishes.get("Ingredientes").get(index)));
@@ -142,23 +139,6 @@ public class NutritionalPlanService {
                 meal.setTotalCalories           ((Integer) dishes.get("Total_Calorias").get(index));
                 meals.add(meal);
             }
-//            index = Integer.toString(i);
-//            Meal meal = new Meal();
-//            meal.setName                    ((String) dishes.get("Alimento").get(index));
-//            meal.setProtein                 ((Double) dishes.get("Proteinas").get(index));
-//            meal.setFat                     ((Double) dishes.get("Grasas").get(index));
-//            meal.setCarbohydrates           ((Double) dishes.get("Carbohidratos").get(index));
-//            meal.setGramsPortion            ((Integer) dishes.get("Cantidad_Gramos_Consumir").get(index));
-//            //(dishes.get("Nivel_Preferencia").get(i));
-//            meal.setSchedule                ((String) dishes.get("Tipo").get(index));
-//            meal.setDay(UtilService.getNowDateMealsWhitAddDays((i/3) + 1));
-//            meal.setStatus((byte) 0);
-//            meal.setNutritionalPlan(nutritionalPlan);
-//            String result = String.join("-", ((ArrayList<String>) dishes.get("Ingredientes").get(index)));
-//            meal.setIngredients(result);
-//            meal.setImageUrl                ((String) dishes.get("Image_url").get(index));
-//            meal.setTotalCalories           ((Integer) dishes.get("Total_Calorias").get(index));
-//            meals.add(meal);
         }
         return mealService.saveListOfMeals(meals);
     }
