@@ -128,7 +128,6 @@ public class NutritionalPlanService {
                 meal.setFat                     ((Double) dishes.get("Grasas").get(index));
                 meal.setCarbohydrates           ((Double) dishes.get("Carbohidratos").get(index));
                 meal.setGramsPortion            ((Integer) dishes.get("Cantidad_Gramos_Consumir").get(index));
-                //(dishes.get("Nivel_Preferencia").get(i));
                 meal.setSchedule                ((String) dishes.get("Tipo").get(index));
                 meal.setDay(UtilService.getNowDateMealsWhitAddDays(i+1));
                 meal.setStatus((byte) 0);

@@ -4,6 +4,6 @@ import lombok.Data;
 
 @Data
 public class ApiAlternativesRequest {
+    String type;
     Integer calories;
-    String schedule;
 }
