@@ -13,7 +13,7 @@ import java.util.List;
 @Repository
 public interface ChildLogRepository extends JpaRepository<ChildLog, Long> {
 
-    @Query("select c from ChildLog c where c.child.childId = ?1 and c.date between  ?1 and ?2")
+    @Query("select c from ChildLog c where c.child.childId = ?1 and c.date between  ?2 and ?3")
     public List<ChildLog> findByChildBetweenDates(Long childId, LocalDate startDate, LocalDate endDate);
 
 }

@@ -1,5 +1,6 @@
 package com.upc.backendnutrimiski.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -26,6 +27,7 @@ public class ChildLog {
     private float imc;
     private LocalDate date;
 
+    @JsonIgnore
     @ManyToOne
     @JoinColumn(name = "childId")
     private Child child;
