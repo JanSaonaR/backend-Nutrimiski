@@ -5,7 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.Date;
+import java.time.LocalDate;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -17,7 +17,7 @@ public class RegisterParentRequestDTO {
     private String lastName;
     private String email;
     private String password;
-    private Date birthDate;
+    private LocalDate birthDate;
     private String phone;
     private String sex;
 

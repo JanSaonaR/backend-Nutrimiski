@@ -1,19 +1,22 @@
 package com.upc.backendnutrimiski.controllers;
 
 import com.upc.backendnutrimiski.models.Child;
+import com.upc.backendnutrimiski.models.ChildLog;
 import com.upc.backendnutrimiski.models.Nutritionist;
-import com.upc.backendnutrimiski.models.User;
 import com.upc.backendnutrimiski.models.dto.ResponseDTO;
 import com.upc.backendnutrimiski.models.dto.UpdateChildDTO;
 import com.upc.backendnutrimiski.models.dto.Wrapper;
+import com.upc.backendnutrimiski.services.ChildLogService;
 import com.upc.backendnutrimiski.services.ChildService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.time.LocalDate;
+import java.util.List;
 
 @RestController
 @RequestMapping("/child")
@@ -22,7 +25,8 @@ public class ChildController {
     @Autowired
     ChildService childService;
 
-
+    @Autowired
+    ChildLogService childLogService;
 
     @PostMapping("/model")
     public ResponseEntity<?> multiUploadFileModel(@ModelAttribute Wrapper model) {
@@ -122,68 +126,67 @@ public class ChildController {
         }
     }
 
-    @PostMapping("/picture/upload")
-    public ResponseEntity<ResponseDTO<Child>> subirImagen(@RequestParam(value = "profilePic") MultipartFile profilePic,
-                                                          @RequestParam("childId") Long childId) throws IOException {
-
-        ResponseDTO<Child> responseDTO = new ResponseDTO<>();
-
-        try {
-            Child child = childService.getChildById(childId);
-
-            if (child == null){
-                responseDTO.setHttpCode(HttpStatus.OK.value());
-                responseDTO.setHttpCode(1);
-                responseDTO.setErrorMessage("El niño no existe");
-                responseDTO.setData(null);
-
-                return new ResponseEntity<>(responseDTO, HttpStatus.OK);
-            }
-            responseDTO.setHttpCode(HttpStatus.OK.value());
-            responseDTO.setHttpCode(0);
-            responseDTO.setErrorMessage("");
-            responseDTO.setData(childService.subirImagen(child, profilePic));
-
-            return new ResponseEntity<>(responseDTO, HttpStatus.OK);
-
-        }catch (Exception e){
-            responseDTO.setHttpCode(HttpStatus.INTERNAL_SERVER_ERROR.value());
-            responseDTO.setHttpCode(2);
-            responseDTO.setErrorMessage(e.getMessage());
-            responseDTO.setData(null);
-
-            return new ResponseEntity<>(responseDTO, HttpStatus.INTERNAL_SERVER_ERROR);
-        }
-    }
-    @DeleteMapping("/picture/delete")
-    public ResponseEntity<ResponseDTO<String>> deleteImagen(@RequestParam("childId") Long childId) throws IOException {
-
-        ResponseDTO<String> responseDTO = new ResponseDTO<>();
-
-        try {
-            Child child = childService.getChildById(childId);
-            if (child == null){
-                responseDTO.setHttpCode(HttpStatus.OK.value());
-                responseDTO.setErrorCode(1);
-                responseDTO.setErrorMessage("El usuario no existe");
-                responseDTO.setData(null);
-            }
-
-            responseDTO.setHttpCode(HttpStatus.OK.value());
-            responseDTO.setErrorCode(0);
-            responseDTO.setErrorMessage("");
-            responseDTO.setData(childService.deleteUserPictureProfile(child));
-
-        } catch (Exception e){
-            responseDTO.setHttpCode(HttpStatus.INTERNAL_SERVER_ERROR.value());
-            responseDTO.setErrorCode(3);
-            responseDTO.setErrorMessage(e.getMessage());
-            responseDTO.setData(null);
-        }
-
-        return new ResponseEntity<>(responseDTO, HttpStatus.INTERNAL_SERVER_ERROR);
-    }
-
+//    @PostMapping("/picture/upload")
+//    public ResponseEntity<ResponseDTO<Child>> subirImagen(@RequestParam(value = "profilePic") MultipartFile profilePic,
+//                                                          @RequestParam("childId") Long childId) throws IOException {
+//
+//        ResponseDTO<Child> responseDTO = new ResponseDTO<>();
+//
+//        try {
+//            Child child = childService.getChildById(childId);
+//
+//            if (child == null){
+//                responseDTO.setHttpCode(HttpStatus.OK.value());
+//                responseDTO.setHttpCode(1);
+//                responseDTO.setErrorMessage("El niño no existe");
+//                responseDTO.setData(null);
+//
+//                return new ResponseEntity<>(responseDTO, HttpStatus.OK);
+//            }
+//            responseDTO.setHttpCode(HttpStatus.OK.value());
+//            responseDTO.setHttpCode(0);
+//            responseDTO.setErrorMessage("");
+//            responseDTO.setData(childService.subirImagen(child, profilePic));
+//
+//            return new ResponseEntity<>(responseDTO, HttpStatus.OK);
+//
+//        }catch (Exception e){
+//            responseDTO.setHttpCode(HttpStatus.INTERNAL_SERVER_ERROR.value());
+//            responseDTO.setHttpCode(2);
+//            responseDTO.setErrorMessage(e.getMessage());
+//            responseDTO.setData(null);
+//
+//            return new ResponseEntity<>(responseDTO, HttpStatus.INTERNAL_SERVER_ERROR);
+//        }
+//    }
+//    @DeleteMapping("/picture/delete")
+//    public ResponseEntity<ResponseDTO<String>> deleteImagen(@RequestParam("childId") Long childId) throws IOException {
+//
+//        ResponseDTO<String> responseDTO = new ResponseDTO<>();
+//
+//        try {
+//            Child child = childService.getChildById(childId);
+//            if (child == null){
+//                responseDTO.setHttpCode(HttpStatus.OK.value());
+//                responseDTO.setErrorCode(1);
+//                responseDTO.setErrorMessage("El usuario no existe");
+//                responseDTO.setData(null);
+//            }
+//
+//            responseDTO.setHttpCode(HttpStatus.OK.value());
+//            responseDTO.setErrorCode(0);
+//            responseDTO.setErrorMessage("");
+//            responseDTO.setData(childService.deleteUserPictureProfile(child));
+//
+//        } catch (Exception e){
+//            responseDTO.setHttpCode(HttpStatus.INTERNAL_SERVER_ERROR.value());
+//            responseDTO.setErrorCode(3);
+//            responseDTO.setErrorMessage(e.getMessage());
+//            responseDTO.setData(null);
+//        }
+//
+//        return new ResponseEntity<>(responseDTO, HttpStatus.INTERNAL_SERVER_ERROR);
+//    }
 
     @GetMapping("/nutritionist")
     public ResponseEntity<ResponseDTO<Nutritionist>> getNutritionist(@RequestParam("childId") Long childId) throws IOException {
@@ -212,6 +215,39 @@ public class ChildController {
         }
 
         return new ResponseEntity<>(responseDTO, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
+
+    @GetMapping("/historial")
+    public ResponseEntity<ResponseDTO<List<ChildLog>>> getHistorial(@RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate startDate,
+                                                                    @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate endDate,
+                                                                    @RequestParam("childId") Long childId){
+        ResponseDTO<List<ChildLog>> responseDTO = new ResponseDTO<>();
+
+        try {
+            Child child = childService.getChildById(childId);
+            if (child == null){
+                responseDTO.setHttpCode(HttpStatus.OK.value());
+                responseDTO.setErrorCode(1);
+                responseDTO.setErrorMessage("El niño no existe.");
+                responseDTO.setData(null);
+
+                return new ResponseEntity<>(responseDTO, HttpStatus.OK);
+            }
+            responseDTO.setHttpCode(HttpStatus.OK.value());
+            responseDTO.setErrorCode(0);
+            responseDTO.setErrorMessage("");
+            responseDTO.setData(childLogService.getChildLogsForChild(childId, startDate, endDate));
+
+            return new ResponseEntity<>(responseDTO, HttpStatus.OK);
+        }catch (Exception e){
+            responseDTO.setHttpCode(HttpStatus.INTERNAL_SERVER_ERROR.value());
+            responseDTO.setErrorCode(2);
+            responseDTO.setErrorMessage(e.getMessage());
+            responseDTO.setData(null);
+
+            return new ResponseEntity<>(responseDTO, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 
 }
