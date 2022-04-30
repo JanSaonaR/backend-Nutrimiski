@@ -186,4 +186,23 @@ public class UserService {
         return "El usuario no tiene foto de perfil";
     }
 
+    public String restorePassword(String email){
+        User user = userRepository.findByEmail(email);
+        String result = "";
+        if (user!= null){
+            String newPassword = UtilService.randomPassword();
+            String encryptedPassword = UtilService.encriptarContrasena(newPassword);
+            user.setPassword(encryptedPassword);
+            user = userRepository.save(user);
+            result = UtilService.sendForgetPassword(user, newPassword);
+            if (result == null){
+                return "Ocurrio un error al enviar el correo";
+            }
+            return "Se ha enviado un correo a " + user.getEmail();
+
+        } else {
+            return "El correo no se encuentra registrado";
+        }
+    }
+
 }

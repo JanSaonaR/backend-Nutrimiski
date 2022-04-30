@@ -214,6 +214,7 @@ public class UserController {
 
     }
 
+
     @PostMapping("/picture/upload")
     public ResponseEntity<ResponseDTO<User>> subirImagen(@RequestParam("profilePic")MultipartFile  profilePic, @RequestParam("userId") Long userId) throws IOException {
 
@@ -274,6 +275,29 @@ public class UserController {
         }
 
         return new ResponseEntity<>(responseDTO, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
+
+    @PostMapping("/recoverPassword")
+    private ResponseEntity<ResponseDTO<String>> restorePassword(@RequestParam String email){
+        ResponseDTO<String> responseDTO = new ResponseDTO<>();
+        try {
+            String result = userService.restorePassword(email);
+
+            responseDTO.setHttpCode(HttpStatus.OK.value());
+            responseDTO.setErrorCode(0);
+            responseDTO.setErrorMessage("");
+            responseDTO.setData(result);
+
+            return new ResponseEntity<>(responseDTO, HttpStatus.OK);
+        }catch (Exception e){
+            responseDTO.setHttpCode(HttpStatus.INTERNAL_SERVER_ERROR.value());
+            responseDTO.setErrorCode(1);
+            responseDTO.setErrorMessage(e.getMessage());
+            responseDTO.setData(null);
+            return new ResponseEntity<>(responseDTO, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+
     }
 
 }

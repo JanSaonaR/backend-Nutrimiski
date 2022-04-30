@@ -3,6 +3,7 @@ package com.upc.backendnutrimiski.services;
 import com.upc.backendnutrimiski.models.*;
 import com.upc.backendnutrimiski.models.api.ApiDishesRequest;
 import com.upc.backendnutrimiski.models.api.ApiDishesResponse;
+import com.upc.backendnutrimiski.models.dto.NutritionalPlanDTO;
 import com.upc.backendnutrimiski.repositories.NutritionalPlanRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
@@ -39,6 +40,16 @@ public class NutritionalPlanService {
 
     public NutritionalPlan getActiveNutritionalPlan(Long childId){
         return nutritionalPlanRepository.getActiveNutritionalPlanByChild(childId);
+    }
+
+    public NutritionalPlanDTO convertActiveNutritionalPlantoDTO(NutritionalPlan nutritionalPlan){
+        NutritionalPlanDTO nutritionalPlanDTO = new NutritionalPlanDTO();
+        nutritionalPlanDTO.setNutritionalPlanId(nutritionalPlan.getNutritionalPlanId());
+        nutritionalPlanDTO.setCaloriesPlan(nutritionalPlan.getCaloriesPlan());
+        nutritionalPlanDTO.setStartDate(nutritionalPlan.getMeals().get(0).getDay().toString());
+        nutritionalPlanDTO.setWeightPatient(nutritionalPlan.getWeightPatient());
+
+        return  nutritionalPlanDTO;
     }
 
     public NutritionalPlan createNutritionalPlan(Long childId){
@@ -85,7 +96,7 @@ public class NutritionalPlanService {
 
     public List<Meal> generateMeals(NutritionalPlan nutritionalPlan) {
 
-        String url = "https://dieta-api.herokuapp.com/api/v1.0/diets";
+        String url = "https://apidieta.azurewebsites.net/api/v1.0/diets";
 
         RestTemplate restTemplate = new RestTemplate();
 

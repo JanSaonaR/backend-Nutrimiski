@@ -148,7 +148,7 @@ public class UtilService {
         properties.put("mail.smtp.ssl.protocols", "TLSv1.2");
         properties.put("mail.smtp.socketFactory.class", "javax.net.ssl.SSLSocketFactory");
 
-        String myAccountEmail = "fullfeedapp@gmail.com";
+        String myAccountEmail = "nutrimiskyapp@gmail.com";
         String password = "bryanxd123";
 
         Session session = Session.getInstance(properties, new Authenticator() {

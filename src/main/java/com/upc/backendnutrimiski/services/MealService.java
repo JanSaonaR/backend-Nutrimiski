@@ -55,7 +55,7 @@ public class MealService {
         List<Meal> meals = new ArrayList<>();
 
 
-        String url = "https://dieta-api.herokuapp.com/api/v1.0/diets/refoods";
+        String url = "https://apidieta.azurewebsites.net/api/v1.0/diets/refoods";
 
         RestTemplate restTemplate = new RestTemplate();
 
