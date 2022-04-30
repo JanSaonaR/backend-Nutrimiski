@@ -84,7 +84,7 @@ public class UtilService {
         String alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxz1234567890";
         StringBuilder sb = new StringBuilder();
         Random random = new Random();
-        int length = 7;
+        int length = 8;
         for(int i = 0; i < length; i++) {
             int index = random.nextInt(alphabet.length());
             char randomChar = alphabet.charAt(index);
